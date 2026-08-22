@@ -490,3 +490,81 @@ $RECYCLE.BIN/
 *.db
 *.db-shm
 *.db-wal
+# ============================================================
+# FocusPocus additions
+# ============================================================
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Local application settings / secrets
+appsettings.Local.json
+appsettings.*.Local.json
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+
+# Frontend build output
+dist/
+**/dist/
+
+# Frontend caches
+.vite/
+**/.vite/
+.eslintcache
+
+# Package manager caches
+.npm/
+.pnpm-store/
+.yarn/
+.yarn-cache/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test coverage
+coverage/
+**/coverage/
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Storybook (if added later)
+storybook-static/
+
+# Local Docker overrides
+docker-compose.override.yml
+compose.override.yml
+
+# Local database / volumes
+postgres-data/
+.pgdata/
+
+# Local temp files
+tmp/
+temp/
+.cache/
+
+# JetBrains / Rider
+.idea/
+
+# Local HTTP client environment files
+*.http.env.json
+http-client.private.env.json
+
+# Local certificates / keys
+*.pem
+*.key
+*.crt
+*.cer
+
+# AI / LLM local secrets
+.openai/
+.ai/
