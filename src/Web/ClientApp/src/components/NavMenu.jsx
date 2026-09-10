@@ -39,7 +39,7 @@ export function NavMenu() {
           <li><Link to="/">{t('navigation.home')}</Link></li>
           <li><Link to="/counter">{t('navigation.counter')}</Link></li>
           <li><Link to="/weather">{t('navigation.weather')}</Link></li>
-          <li><Link to="/todo">{t('navigation.tasks')}</Link></li>
+          <li><Link to="/tasks">{t('navigation.tasks')}</Link></li>
         </ul>
         <ul>
           <AuthLinks />

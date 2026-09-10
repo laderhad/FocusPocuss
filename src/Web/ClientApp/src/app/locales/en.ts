@@ -16,6 +16,28 @@ export const en = {
     light: 'Use light theme',
     dark: 'Use dark theme',
   },
+  tasks: {
+    title: 'Tasks',
+    subtitle: 'Write down what you need to do while it is on your mind.',
+    capture: {
+      label: 'What do you need to do?',
+      placeholder: 'Describe it in your own words...',
+      submit: 'Save task',
+      submitting: 'Saving...',
+      saveError: 'The task could not be saved. Try again.',
+      validation: {
+        required: 'Enter what you need to do.',
+        tooLong: 'The task cannot exceed {{count}} characters.',
+      },
+    },
+    history: {
+      title: 'Recent tasks',
+      loading: 'Loading tasks...',
+      loadError: 'Tasks could not be loaded.',
+      retry: 'Try again',
+      empty: 'No saved tasks yet.',
+    },
+  },
   auth: {
     login: {
       title: 'Log in',

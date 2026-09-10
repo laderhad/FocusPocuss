@@ -16,6 +16,28 @@ export const tr = {
     light: 'Açık temayı kullan',
     dark: 'Koyu temayı kullan',
   },
+  tasks: {
+    title: 'Görevler',
+    subtitle: 'Aklındayken yapman gerekeni kendi sözlerinle yaz.',
+    capture: {
+      label: 'Ne yapman gerekiyor?',
+      placeholder: 'Kendi sözlerinle yaz...',
+      submit: 'Görevi kaydet',
+      submitting: 'Kaydediliyor...',
+      saveError: 'Görev kaydedilemedi. Tekrar dene.',
+      validation: {
+        required: 'Yapman gerekeni yaz.',
+        tooLong: 'Görev en fazla {{count}} karakter olabilir.',
+      },
+    },
+    history: {
+      title: 'Son görevler',
+      loading: 'Görevler yükleniyor...',
+      loadError: 'Görevler yüklenemedi.',
+      retry: 'Tekrar dene',
+      empty: 'Henüz kaydedilmiş görev yok.',
+    },
+  },
   auth: {
     login: {
       title: 'Giriş yap',
