@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from './AuthContext';
 
 const MIN_PASSWORD_LENGTH = 6;
@@ -9,6 +10,7 @@ function validateEmail(value) {
 }
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailTouched, setEmailTouched] = useState(false);
@@ -33,16 +35,16 @@ export function RegisterPage() {
       await register(email, password);
       navigate('/login');
     } catch {
-      setError('Registration failed. Please try again.');
+      setError(t('auth.register.failed'));
     }
   };
 
   return (
     <article>
-      <h2>Register</h2>
+      <h2>{t('auth.register.title')}</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">{t('auth.register.email')}</label>
         <input type="email" id="email" autoComplete="username"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -50,9 +52,9 @@ export function RegisterPage() {
           aria-invalid={emailInvalid}
           aria-describedby="email-helper" />
         <small id="email-helper">
-          {emailTouched && !emailValid ? 'Please enter a valid email address.' : ''}
+          {emailTouched && !emailValid ? t('auth.register.invalidEmail') : ''}
         </small>
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">{t('auth.register.password')}</label>
         <input type="password" id="password" autoComplete="new-password"
           value={password}
           onChange={e => setPassword(e.target.value)}
@@ -61,11 +63,13 @@ export function RegisterPage() {
           aria-describedby="password-helper" />
         <small id="password-helper">
           {passwordTouched && !passwordValid
-            ? `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`
+            ? t('auth.register.passwordMinimum', { count: MIN_PASSWORD_LENGTH })
             : ''}
         </small>
-        <button type="submit">Register</button>
-        <p style={{ marginTop: '1rem' }}>Already have an account? <Link to="/login">Log in</Link></p>
+        <button type="submit">{t('auth.register.submit')}</button>
+        <p style={{ marginTop: '1rem' }}>
+          {t('auth.register.hasAccount')} <Link to="/login">{t('auth.register.loginLink')}</Link>
+        </p>
       </form>
     </article>
   );
