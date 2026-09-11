@@ -10,5 +10,7 @@ public interface IApplicationDbContext
 
     DbSet<TaskItem> TaskItems { get; }
 
+    DbSet<TaskStartPlan> TaskStartPlans { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

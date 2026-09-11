@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TaskItem> TaskItems => Set<TaskItem>();
 
+    public DbSet<TaskStartPlan> TaskStartPlans => Set<TaskStartPlan>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

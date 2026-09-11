@@ -15,4 +15,6 @@ public class TaskItem : BaseAuditableEntity
     public string UserId { get; private set; } = string.Empty;
 
     public string OriginalInput { get; private set; } = string.Empty;
+
+    public TaskStartPlan? StartPlan { get; private set; }
 }
