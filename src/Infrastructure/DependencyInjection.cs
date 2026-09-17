@@ -1,12 +1,17 @@
 ﻿using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Application.Tasks.Planning;
+using FocusPocuss.Infrastructure.AI;
 using FocusPocuss.Infrastructure.Data;
 using FocusPocuss.Infrastructure.Data.Interceptors;
 using FocusPocuss.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using OpenAI.Chat;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -52,5 +57,18 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+
+        builder.Services.AddOptions<OpenAiOptions>()
+            .Bind(builder.Configuration.GetSection(OpenAiOptions.SectionName))
+            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiKey), "OpenAI API key is required.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "OpenAI model is required.");
+
+        builder.Services.AddSingleton<IChatClient>(provider =>
+        {
+            var options = provider.GetRequiredService<IOptions<OpenAiOptions>>().Value;
+            return new ChatClient(options.Model, options.ApiKey).AsIChatClient();
+        });
+
+        builder.Services.AddSingleton<ITaskStartPlanner, OpenAiTaskStartPlanner>();
     }
 }
