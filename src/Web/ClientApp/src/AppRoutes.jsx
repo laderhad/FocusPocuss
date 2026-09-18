@@ -6,6 +6,7 @@ import { LoginPage } from "./components/api-authorization/LoginPage";
 import { RegisterPage } from "./components/api-authorization/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
 import { TasksPage } from "./pages/TasksPage";
+import { TaskDetailsPage } from "./pages/TaskDetailsPage";
 
 const AppRoutes = [
   {
@@ -27,6 +28,10 @@ const AppRoutes = [
   {
     path: '/tasks',
     element: <ProtectedRoute><TasksPage /></ProtectedRoute>
+  },
+  {
+    path: '/tasks/:taskId',
+    element: <ProtectedRoute><TaskDetailsPage /></ProtectedRoute>
   },
   {
     path: '/login',

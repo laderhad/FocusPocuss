@@ -1,3 +1,4 @@
 export { TaskCaptureForm } from './components/TaskCaptureForm';
 export { TaskList } from './components/TaskList';
-export { useTasks } from './api/taskQueries';
+export { TaskStartPlanPanel } from './components/TaskStartPlanPanel';
+export { useTaskDetails, useTasks } from './api/taskQueries';

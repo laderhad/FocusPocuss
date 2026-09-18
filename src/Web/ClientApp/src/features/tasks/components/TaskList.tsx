@@ -1,5 +1,6 @@
 import { RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { TaskDto } from '../api/tasksApi';
 
 interface TaskListProps {
@@ -36,7 +37,9 @@ export function TaskList({ tasks, isLoading, isError, onRetry }: TaskListProps) 
     <ol className="task-history-list">
       {tasks.map((task) => (
         <li key={task.id} className="task-history-item">
-          {task.originalInput}
+          {task.id === undefined
+            ? task.originalInput
+            : <Link to={`/tasks/${task.id}`}>{task.originalInput}</Link>}
         </li>
       ))}
     </ol>

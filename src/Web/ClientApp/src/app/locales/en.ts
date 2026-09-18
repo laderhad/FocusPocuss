@@ -25,6 +25,7 @@ export const en = {
       submit: 'Save task',
       submitting: 'Saving...',
       saveError: 'The task could not be saved. Try again.',
+      aiDisclosure: 'Your task text is processed by OpenAI to prepare a starting recommendation.',
       validation: {
         required: 'Enter what you need to do.',
         tooLong: 'The task cannot exceed {{count}} characters.',
@@ -36,6 +37,21 @@ export const en = {
       loadError: 'Tasks could not be loaded.',
       retry: 'Try again',
       empty: 'No saved tasks yet.',
+    },
+    detail: {
+      back: 'Back to tasks',
+      capturedTask: 'Captured task',
+      loading: 'Loading task...',
+      loadError: 'The task could not be loaded.',
+      notFound: 'The task could not be found.',
+      retry: 'Try again',
+    },
+    startPlan: {
+      title: 'Start here',
+      generating: 'Preparing a small first step...',
+      error: 'A starting recommendation could not be prepared.',
+      retry: 'Try again',
+      duration: '{{count}} min',
     },
   },
   auth: {

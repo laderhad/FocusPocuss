@@ -25,6 +25,7 @@ export const tr = {
       submit: 'Görevi kaydet',
       submitting: 'Kaydediliyor...',
       saveError: 'Görev kaydedilemedi. Tekrar dene.',
+      aiDisclosure: 'Görev metnin, başlangıç önerisi hazırlamak için OpenAI tarafından işlenir.',
       validation: {
         required: 'Yapman gerekeni yaz.',
         tooLong: 'Görev en fazla {{count}} karakter olabilir.',
@@ -36,6 +37,21 @@ export const tr = {
       loadError: 'Görevler yüklenemedi.',
       retry: 'Tekrar dene',
       empty: 'Henüz kaydedilmiş görev yok.',
+    },
+    detail: {
+      back: 'Görevlere dön',
+      capturedTask: 'Kaydedilen görev',
+      loading: 'Görev yükleniyor...',
+      loadError: 'Görev yüklenemedi.',
+      notFound: 'Görev bulunamadı.',
+      retry: 'Tekrar dene',
+    },
+    startPlan: {
+      title: 'Buradan başla',
+      generating: 'Küçük bir ilk adım hazırlanıyor...',
+      error: 'Başlangıç önerisi hazırlanamadı.',
+      retry: 'Tekrar dene',
+      duration: '{{count}} dk',
     },
   },
   auth: {

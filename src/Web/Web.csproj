@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>FocusPocuss.Web</RootNamespace>
     <AssemblyName>FocusPocuss.Web</AssemblyName>
+    <UserSecretsId>C656AE00-2F05-4B9C-A448-137012B823A7</UserSecretsId>
     <SpaRoot>ClientApp\</SpaRoot>
     <OpenApiDocumentsDirectory>./wwwroot/openapi/</OpenApiDocumentsDirectory>
     <OpenApiGenerateDocumentsOptions>--file-name v1</OpenApiGenerateDocumentsOptions>

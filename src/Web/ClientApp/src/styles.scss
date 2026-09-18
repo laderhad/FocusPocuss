@@ -344,6 +344,13 @@ html {
   color: var(--pico-del-color);
 }
 
+.task-ai-disclosure {
+  display: block;
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--pico-muted-color);
+}
+
 .task-history h2 {
   margin-bottom: var(--pico-spacing);
   font-size: 1.25rem;
@@ -361,6 +368,16 @@ html {
   border-bottom: 1px solid var(--pico-muted-border-color);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+
+  a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pico-primary);
+    }
+  }
 }
 
 .task-history-state {
@@ -375,6 +392,82 @@ html {
     align-items: center;
     gap: 0.5rem;
     width: auto;
+  }
+}
+
+.task-detail-page,
+.task-detail-state {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.task-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: calc(var(--pico-block-spacing-vertical) * 1.5);
+  text-decoration: none;
+}
+
+.task-detail-header {
+  margin-bottom: calc(var(--pico-block-spacing-vertical) * 2);
+
+  p {
+    margin-bottom: 0.5rem;
+    color: var(--pico-muted-color);
+  }
+
+  h1 {
+    margin-bottom: 0;
+    font-size: 1.75rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+}
+
+.task-start-plan {
+  padding-top: calc(var(--pico-block-spacing-vertical) * 1.5);
+  border-top: 1px solid var(--pico-muted-border-color);
+
+  h2 {
+    margin-bottom: var(--pico-spacing);
+    font-size: 1.25rem;
+  }
+}
+
+.task-start-plan-message {
+  margin-bottom: 0.75rem;
+  color: var(--pico-muted-color);
+}
+
+.task-start-plan-action {
+  margin-bottom: var(--pico-spacing);
+  font-size: 1.25rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.task-start-plan-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0;
+  color: var(--pico-muted-color);
+}
+
+.task-start-plan-state,
+.task-detail-state {
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+    margin-right: var(--pico-spacing);
   }
 }
 

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useCreateTask } from '../api/taskQueries';
 
 const maxOriginalInputLength = 1000;
@@ -9,6 +10,7 @@ type ValidationError = 'required' | 'tooLong';
 
 export function TaskCaptureForm() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [originalInput, setOriginalInput] = useState('');
   const [validationError, setValidationError] = useState<ValidationError | null>(null);
   const createTask = useCreateTask();
@@ -28,7 +30,13 @@ export function TaskCaptureForm() {
 
     setValidationError(null);
     createTask.mutate(originalInput, {
-      onSuccess: () => setOriginalInput(''),
+      onSuccess: (task) => {
+        setOriginalInput('');
+
+        if (task.id !== undefined) {
+          navigate(`/tasks/${task.id}`);
+        }
+      },
     });
   };
 
@@ -59,9 +67,14 @@ export function TaskCaptureForm() {
         maxLength={maxOriginalInputLength}
         rows={4}
         aria-invalid={errorMessage ? true : undefined}
-        aria-describedby={errorMessage ? 'task-capture-error' : undefined}
+        aria-describedby={errorMessage
+          ? 'task-ai-disclosure task-capture-error'
+          : 'task-ai-disclosure'}
         disabled={createTask.isPending}
       />
+      <small id="task-ai-disclosure" className="task-ai-disclosure">
+        {t('tasks.capture.aiDisclosure')}
+      </small>
       <div className="task-capture-footer">
         <div id="task-capture-error" className="task-capture-error" aria-live="polite">
           {errorMessage}
