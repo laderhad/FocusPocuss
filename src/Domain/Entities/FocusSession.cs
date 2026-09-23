@@ -39,4 +39,9 @@ public class FocusSession : BaseAuditableEntity
     public TaskItem TaskItem { get; private set; } = null!;
 
     public TaskStartPlan TaskStartPlan { get; private set; } = null!;
+
+    public void Complete(DateTimeOffset completedAtUtc)
+    {
+        CompletedAtUtc ??= completedAtUtc;
+    }
 }
