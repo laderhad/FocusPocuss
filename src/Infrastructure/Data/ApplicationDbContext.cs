@@ -19,6 +19,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TaskStartPlan> TaskStartPlans => Set<TaskStartPlan>();
 
+    public DbSet<FocusSession> FocusSessions => Set<FocusSession>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

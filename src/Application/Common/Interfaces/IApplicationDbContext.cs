@@ -12,5 +12,7 @@ public interface IApplicationDbContext
 
     DbSet<TaskStartPlan> TaskStartPlans { get; }
 
+    DbSet<FocusSession> FocusSessions { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
