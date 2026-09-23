@@ -35,6 +35,12 @@ public static class TestApp
 
     public static List<string>? GetRoles() => _roles;
 
+    public static TestTaskStartPlanner GetTaskStartPlanner()
+    {
+        using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<TestTaskStartPlanner>();
+    }
+
     public static async Task<string> RunAsDefaultUserAsync()
     {
         return await RunAsUserAsync("test@local", "Testing1234!", []);
@@ -88,6 +94,7 @@ public static class TestApp
 
         _userId = null;
         _roles = null;
+        GetTaskStartPlanner().Reset();
     }
 
     public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)

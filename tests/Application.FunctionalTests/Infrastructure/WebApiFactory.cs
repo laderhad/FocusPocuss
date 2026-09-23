@@ -1,4 +1,5 @@
 using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Application.Tasks.Planning;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -16,6 +17,12 @@ public class WebApiFactory(string connectionString) : WebApplicationFactory<Prog
 
         builder.ConfigureTestServices(services =>
         {
+            services
+                .RemoveAll<ITaskStartPlanner>()
+                .AddSingleton<TestTaskStartPlanner>()
+                .AddSingleton<ITaskStartPlanner>(provider =>
+                    provider.GetRequiredService<TestTaskStartPlanner>());
+
             services
                 .RemoveAll<IUser>()
                 .AddTransient(provider =>

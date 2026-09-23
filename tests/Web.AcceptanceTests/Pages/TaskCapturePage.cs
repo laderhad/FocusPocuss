@@ -1,7 +1,11 @@
+using System.Text.RegularExpressions;
+
 namespace FocusPocuss.Web.AcceptanceTests.Pages;
 
 public class TaskCapturePage(IPage page) : BasePage(page)
 {
+    public const string ExpectedNextAction = "Open the project and write the first review note.";
+
     public override string PagePath => $"{BaseUrl}/tasks";
 
     public async Task CaptureTaskAsync(string originalInput)
@@ -10,14 +14,18 @@ public class TaskCapturePage(IPage page) : BasePage(page)
 
         await input.FillAsync(originalInput);
         await Page.Locator(".task-capture-form button[type='submit']").ClickAsync();
-        await Assertions.Expect(input).ToHaveValueAsync(string.Empty);
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex(@"/tasks/\d+$"));
     }
 
-    public async Task AssertLatestTaskAsync(string originalInput)
+    public async Task AssertTaskDetailsAsync(string originalInput)
     {
-        var latestTask = Page.Locator(".task-history-item").First;
+        var capturedTask = Page.Locator(".task-detail-header h1");
 
-        await Assertions.Expect(latestTask).ToContainTextAsync(originalInput.Trim());
-        (await latestTask.TextContentAsync()).ShouldBe(originalInput);
+        await Assertions.Expect(capturedTask).ToBeVisibleAsync();
+        (await capturedTask.TextContentAsync()).ShouldBe(originalInput);
     }
+
+    public Task AssertStartPlanAsync()
+        => Assertions.Expect(Page.Locator(".task-start-plan-action"))
+            .ToHaveTextAsync(ExpectedNextAction);
 }

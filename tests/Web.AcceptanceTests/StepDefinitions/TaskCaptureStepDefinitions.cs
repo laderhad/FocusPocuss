@@ -14,6 +14,24 @@ public sealed class TaskCaptureStepDefinitions(TaskCapturePage taskCapturePage)
         });
         var page = await context.NewPageAsync();
 
+        await page.RouteAsync("**/api/tasks/*/start-plan", async route =>
+        {
+            await route.FulfillAsync(new RouteFulfillOptions
+            {
+                Status = 200,
+                ContentType = "application/json",
+                Body = $$"""
+                    {
+                      "id": 1,
+                      "message": "A small first step is enough.",
+                      "nextAction": "{{TaskCapturePage.ExpectedNextAction}}",
+                      "suggestedDurationMinutes": 8,
+                      "createdAt": "2026-09-18T10:00:00Z"
+                    }
+                    """
+            });
+        });
+
         var loginPage = new LoginPage(page);
         await loginPage.GotoAsync();
         await loginPage.SetEmail("administrator@localhost");
@@ -44,7 +62,11 @@ public sealed class TaskCaptureStepDefinitions(TaskCapturePage taskCapturePage)
         await taskCapturePage.CaptureTaskAsync(_originalInput);
     }
 
-    [Then("the original task input is shown unchanged in the task history")]
-    public Task ThenTheOriginalTaskInputIsShownUnchangedInTheTaskHistory()
-        => taskCapturePage.AssertLatestTaskAsync(_originalInput);
+    [Then("the original task input is shown unchanged on the task detail page")]
+    public Task ThenTheOriginalTaskInputIsShownUnchangedOnTheTaskDetailPage()
+        => taskCapturePage.AssertTaskDetailsAsync(_originalInput);
+
+    [Then("a starting recommendation is shown")]
+    public Task ThenAStartingRecommendationIsShown()
+        => taskCapturePage.AssertStartPlanAsync();
 }
