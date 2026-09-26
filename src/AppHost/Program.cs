@@ -4,11 +4,18 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddAzureContainerAppEnvironment("aca-env");
 
+var databaseServerResourceName =
+    builder.Configuration["DatabaseServerResourceName"] ?? Services.DatabaseServer;
 var databaseServer = builder
-    .AddAzurePostgresFlexibleServer(Services.DatabaseServer)
+    .AddAzurePostgresFlexibleServer(databaseServerResourceName)
     .WithPasswordAuthentication()
-    .RunAsContainer(container => 
-        container.WithLifetime(ContainerLifetime.Persistent))
+    .RunAsContainer(container =>
+    {
+        if (databaseServerResourceName == Services.DatabaseServer)
+        {
+            container.WithLifetime(ContainerLifetime.Persistent);
+        }
+    })
     .AddDatabase(Services.Database);
 
 var web = builder.AddProject<Projects.Web>(Services.WebApi)

@@ -6,6 +6,8 @@ namespace FocusPocuss.Web.AcceptanceTests;
 public class AspireSetup
 {
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(60);
+    private static readonly string DatabaseServerResourceName =
+        $"dbserver-acceptance-{Environment.ProcessId}";
 
     public static IDistributedApplicationTestingBuilder Builder { get; private set; } = null!;
     public static DistributedApplication App { get; private set; } = null!;
@@ -18,10 +20,10 @@ public class AspireSetup
 
         Builder = await DistributedApplicationTestingBuilder
              .CreateAsync<Projects.AppHost>(
-                args: [],
+                args: [$"--DatabaseServerResourceName={DatabaseServerResourceName}"],
                 configureBuilder: (options, _) =>
                 {
-                    options.DisableDashboard = false; // Enable the dashboard for testing purposes
+                    options.DisableDashboard = true;
                 });
 
         Builder.Configuration["ASPIRE_ALLOW_UNSECURED_TRANSPORT"] = "true";

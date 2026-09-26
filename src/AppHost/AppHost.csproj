@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>FocusPocuss.AppHost</RootNamespace>
     <AssemblyName>FocusPocuss.AppHost</AssemblyName>
+    <UserSecretsId>66c3761e-8566-4bf3-a44c-92fc6c711a27</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

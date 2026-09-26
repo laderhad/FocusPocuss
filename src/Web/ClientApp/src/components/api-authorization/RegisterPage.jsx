@@ -9,6 +9,20 @@ function validateEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function validatePassword(value) {
+  return value.length >= MIN_PASSWORD_LENGTH
+    && /[a-z]/.test(value)
+    && /[A-Z]/.test(value)
+    && /\d/.test(value)
+    && /[^A-Za-z0-9]/.test(value);
+}
+
+function isDuplicateEmailError(error) {
+  if (!error || typeof error !== 'object' || !error.errors) return false;
+
+  return Boolean(error.errors.DuplicateEmail || error.errors.DuplicateUserName);
+}
+
 export function RegisterPage() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
@@ -20,7 +34,7 @@ export function RegisterPage() {
   const navigate = useNavigate();
 
   const emailValid = validateEmail(email);
-  const passwordValid = password.length >= MIN_PASSWORD_LENGTH;
+  const passwordValid = validatePassword(password);
 
   const emailInvalid = emailTouched ? !emailValid : undefined;
   const passwordInvalid = passwordTouched ? !passwordValid : undefined;
@@ -34,8 +48,12 @@ export function RegisterPage() {
     try {
       await register(email, password);
       navigate('/login');
-    } catch {
-      setError(t('auth.register.failed'));
+    } catch (registrationError) {
+      setError(t(
+        isDuplicateEmailError(registrationError)
+          ? 'auth.register.emailInUse'
+          : 'auth.register.failed',
+      ));
     }
   };
 
@@ -63,7 +81,7 @@ export function RegisterPage() {
           aria-describedby="password-helper" />
         <small id="password-helper">
           {passwordTouched && !passwordValid
-            ? t('auth.register.passwordMinimum', { count: MIN_PASSWORD_LENGTH })
+            ? t('auth.register.passwordRequirements', { count: MIN_PASSWORD_LENGTH })
             : ''}
         </small>
         <button type="submit">{t('auth.register.submit')}</button>
