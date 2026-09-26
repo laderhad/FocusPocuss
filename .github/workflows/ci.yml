@@ -38,6 +38,12 @@ jobs:
       - name: Run Application unit tests
         run: dotnet test tests/Application.UnitTests/Application.UnitTests.csproj --configuration Release --no-build --no-restore
 
+      - name: Verify Docker availability
+        run: docker info --format '{{.ServerVersion}}'
+
+      - name: Run Application functional tests
+        run: dotnet test tests/Application.FunctionalTests/Application.FunctionalTests.csproj --configuration Release --no-build --no-restore
+
       - name: Verify generated OpenAPI document
         run: test -f src/Web/wwwroot/openapi/v1.json
 
