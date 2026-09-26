@@ -6,7 +6,7 @@ public sealed class LoginStepDefinitions(LoginPage loginPage)
     [BeforeFeature("Login")]
     public static async Task BeforeLoginFeature(IObjectContainer container)
     {
-        var context = await PlaywrightSetup.Browser.NewContextAsync();
+        var context = await PlaywrightSetup.NewContextAsync();
         var page = await context.NewPageAsync();
         container.RegisterInstanceAs(context);
         container.RegisterInstanceAs(new LoginPage(page));

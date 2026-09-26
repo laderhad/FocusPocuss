@@ -73,3 +73,20 @@ jobs:
       - name: Build frontend
         working-directory: src/Web/ClientApp
         run: npm run build
+
+      - name: Install Playwright Chromium
+        run: pwsh artifacts/bin/Web.AcceptanceTests/release/playwright.ps1 install --with-deps chromium
+
+      - name: Run Web acceptance tests
+        run: dotnet test tests/Web.AcceptanceTests/Web.AcceptanceTests.csproj --configuration Release --no-build --no-restore --logger "trx;LogFileName=acceptance-tests.trx" --results-directory artifacts/test-results/acceptance
+        env:
+          PLAYWRIGHT_ARTIFACTS_DIR: ${{ github.workspace }}/artifacts/test-results/acceptance/playwright
+
+      - name: Upload acceptance test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: acceptance-test-artifacts
+          path: artifacts/test-results/acceptance
+          if-no-files-found: ignore
+          retention-days: 7

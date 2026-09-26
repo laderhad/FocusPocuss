@@ -5,6 +5,7 @@ namespace FocusPocuss.Web.AcceptanceTests;
 [SetUpFixture]
 public class PlaywrightSetup
 {
+    private const string ArtifactsDirectoryVariable = "PLAYWRIGHT_ARTIFACTS_DIR";
     private static bool IsHeadless => Debugger.IsAttached is false;
     private static IPlaywright? _playwright;
 
@@ -22,6 +23,21 @@ public class PlaywrightSetup
             Headless = IsHeadless,
             SlowMo = IsHeadless ? 0 : 500
         });
+    }
+
+    public static Task<IBrowserContext> NewContextAsync(BrowserNewContextOptions? options = null)
+    {
+        options ??= new BrowserNewContextOptions();
+
+        var artifactsDirectory = Environment.GetEnvironmentVariable(ArtifactsDirectoryVariable);
+        if (!string.IsNullOrWhiteSpace(artifactsDirectory))
+        {
+            var videoDirectory = Path.Combine(artifactsDirectory, "videos");
+            Directory.CreateDirectory(videoDirectory);
+            options.RecordVideoDir = videoDirectory;
+        }
+
+        return Browser.NewContextAsync(options);
     }
 
     [OneTimeTearDown]

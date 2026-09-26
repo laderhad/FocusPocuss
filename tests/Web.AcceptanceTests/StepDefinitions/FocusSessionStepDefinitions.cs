@@ -8,7 +8,7 @@ public sealed class FocusSessionStepDefinitions(
     [BeforeFeature("FocusSession")]
     public static async Task BeforeFocusSessionFeature(IObjectContainer container)
     {
-        var context = await PlaywrightSetup.Browser.NewContextAsync(new BrowserNewContextOptions
+        var context = await PlaywrightSetup.NewContextAsync(new BrowserNewContextOptions
         {
             Locale = "en-US"
         });

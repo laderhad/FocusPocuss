@@ -6,7 +6,7 @@ public sealed class RegistrationStepDefinitions(RegistrationPage registrationPag
     [BeforeFeature("Registration")]
     public static async Task BeforeRegistrationFeature(IObjectContainer container)
     {
-        var context = await PlaywrightSetup.Browser.NewContextAsync(new BrowserNewContextOptions
+        var context = await PlaywrightSetup.NewContextAsync(new BrowserNewContextOptions
         {
             Locale = "en-US"
         });
