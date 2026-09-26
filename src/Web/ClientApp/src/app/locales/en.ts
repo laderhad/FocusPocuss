@@ -54,6 +54,29 @@ export const en = {
       duration: '{{count}} min',
     },
   },
+  focus: {
+    start: {
+      action: 'Start focus',
+      starting: 'Starting...',
+      error: 'The focus session could not be started. Try again.',
+    },
+    session: {
+      label: 'Current action',
+      remaining: 'Time remaining',
+      loading: 'Loading focus session...',
+      loadError: 'The focus session could not be loaded.',
+      notFound: 'The focus session could not be found.',
+      retry: 'Try again',
+      complete: 'Complete session',
+      completing: 'Completing...',
+      completeError: 'The focus session could not be completed. Try again.',
+      expired: 'Time is up. Complete the session when you are ready.',
+      completed: 'Session completed',
+      completedMessage: 'This focus session is complete.',
+      backToTask: 'Back to task',
+      backToTasks: 'Back to tasks',
+    },
+  },
   auth: {
     login: {
       title: 'Log in',

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Clock3, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { StartFocusSessionButton } from '../../focus';
 import { useCreateTaskStartPlan } from '../api/taskQueries';
 import type { TaskStartPlanDto } from '../api/tasksApi';
 
@@ -32,10 +33,15 @@ export function TaskStartPlanPanel({ taskId, existingPlan }: TaskStartPlanPanelP
         <h2 id="task-start-plan-title">{t('tasks.startPlan.title')}</h2>
         <p className="task-start-plan-message">{plan.message}</p>
         <p className="task-start-plan-action">{plan.nextAction}</p>
-        <p className="task-start-plan-duration">
-          <Clock3 size={18} aria-hidden="true" />
-          {t('tasks.startPlan.duration', { count: plan.suggestedDurationMinutes })}
-        </p>
+        <div className="task-start-plan-footer">
+          <p className="task-start-plan-duration">
+            <Clock3 size={18} aria-hidden="true" />
+            {t('tasks.startPlan.duration', { count: plan.suggestedDurationMinutes })}
+          </p>
+          {plan.id !== undefined && (
+            <StartFocusSessionButton taskId={taskId} taskStartPlanId={plan.id} />
+          )}
+        </div>
       </section>
     );
   }

@@ -54,6 +54,29 @@ export const tr = {
       duration: '{{count}} dk',
     },
   },
+  focus: {
+    start: {
+      action: 'Odaklanmaya başla',
+      starting: 'Başlatılıyor...',
+      error: 'Odak oturumu başlatılamadı. Tekrar dene.',
+    },
+    session: {
+      label: 'Şu anki adım',
+      remaining: 'Kalan süre',
+      loading: 'Odak oturumu yükleniyor...',
+      loadError: 'Odak oturumu yüklenemedi.',
+      notFound: 'Odak oturumu bulunamadı.',
+      retry: 'Tekrar dene',
+      complete: 'Oturumu tamamla',
+      completing: 'Tamamlanıyor...',
+      completeError: 'Odak oturumu tamamlanamadı. Tekrar dene.',
+      expired: 'Süre doldu. Hazır olduğunda oturumu tamamla.',
+      completed: 'Oturum tamamlandı',
+      completedMessage: 'Bu odak oturumu tamamlandı.',
+      backToTask: 'Göreve dön',
+      backToTasks: 'Görevlere dön',
+    },
+  },
   auth: {
     login: {
       title: 'Giriş yap',

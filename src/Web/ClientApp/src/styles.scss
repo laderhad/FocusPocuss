@@ -456,6 +456,127 @@ html {
   color: var(--pico-muted-color);
 }
 
+.task-start-plan-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pico-spacing);
+}
+
+.focus-start-control {
+  text-align: right;
+}
+
+.focus-start-button,
+.focus-session button,
+.focus-session-state button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: auto;
+  margin: 0;
+}
+
+.focus-start-error,
+.focus-session-error {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  color: var(--pico-del-color);
+}
+
+#root > main.focus-main {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.focus-session-page,
+.focus-session-state {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: calc(var(--pico-block-spacing-vertical) * 2) var(--pico-spacing);
+}
+
+.focus-session,
+.focus-session-result {
+  width: 100%;
+  max-width: 46rem;
+  margin: 0;
+  text-align: center;
+}
+
+.focus-session-label {
+  margin-bottom: var(--pico-spacing);
+  color: var(--pico-muted-color);
+}
+
+.focus-session h1 {
+  margin-bottom: calc(var(--pico-block-spacing-vertical) * 2);
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.focus-session-timer {
+  margin-bottom: calc(var(--pico-block-spacing-vertical) * 2);
+
+  p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--pico-muted-color);
+  }
+
+  time {
+    display: block;
+    min-width: 6ch;
+    font-family: var(--pico-font-family-monospace);
+    font-size: 4rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+}
+
+.focus-session-expired {
+  margin-top: calc(var(--pico-block-spacing-vertical) * -1);
+  margin-bottom: var(--pico-block-spacing-vertical);
+  color: var(--pico-muted-color);
+}
+
+.focus-session-result {
+  svg {
+    margin-bottom: var(--pico-spacing);
+    color: var(--pico-primary);
+  }
+
+  h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+
+  p {
+    color: var(--pico-muted-color);
+  }
+}
+
+.focus-session-state {
+  align-content: center;
+  text-align: center;
+
+  p {
+    margin-bottom: var(--pico-spacing);
+  }
+
+  a {
+    display: block;
+    margin-top: var(--pico-spacing);
+  }
+}
+
 .task-start-plan-state,
 .task-detail-state {
   p {
@@ -481,6 +602,25 @@ html {
       width: 100%;
       margin-left: 0;
     }
+  }
+
+  .task-start-plan-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .focus-start-control,
+  .focus-start-button {
+    width: 100%;
+  }
+
+  .focus-session h1,
+  .focus-session-result h1 {
+    font-size: 1.5rem;
+  }
+
+  .focus-session-timer time {
+    font-size: 3rem;
   }
 }
 
