@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore .NET dependencies
+        run: dotnet restore FocusPocuss.slnx
+
+      - name: Build .NET solution
+        run: dotnet build FocusPocuss.slnx --configuration Release --no-restore
+
+      - name: Run Domain unit tests
+        run: dotnet test tests/Domain.UnitTests/Domain.UnitTests.csproj --configuration Release --no-build --no-restore
+
+      - name: Run Application unit tests
+        run: dotnet test tests/Application.UnitTests/Application.UnitTests.csproj --configuration Release --no-build --no-restore
+
+      - name: Verify generated OpenAPI document
+        run: test -f src/Web/wwwroot/openapi/v1.json
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: src/Web/ClientApp/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: src/Web/ClientApp
+        run: npm ci
+
+      - name: Generate frontend API client
+        working-directory: src/Web/ClientApp
+        run: npm run generate-api
+
+      - name: Check frontend types
+        working-directory: src/Web/ClientApp
+        run: npm exec -- tsc --noEmit
+
+      - name: Lint frontend
+        working-directory: src/Web/ClientApp
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: src/Web/ClientApp
+        run: npm run build
