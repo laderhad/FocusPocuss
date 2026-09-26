@@ -30,9 +30,15 @@ public class CompleteFocusSessionTests : TestBase
 
         completed.CompletedAtUtc.ShouldNotBeNull();
         completed.CompletedAtUtc.Value.ShouldBeGreaterThanOrEqualTo(session.StartedAtUtc);
-        completedAgain.CompletedAtUtc.ShouldBe(completed.CompletedAtUtc);
-        (await TestApp.FindAsync<FocusSession>(session.Id))!.CompletedAtUtc
-            .ShouldBe(completed.CompletedAtUtc);
+        completedAgain.CompletedAtUtc.ShouldNotBeNull();
+        completedAgain.CompletedAtUtc.Value.ShouldBe(
+            completed.CompletedAtUtc.Value,
+            DatabaseTimestampPrecision);
+        var persistedCompletedAtUtc = (await TestApp.FindAsync<FocusSession>(session.Id))!.CompletedAtUtc;
+        persistedCompletedAtUtc.ShouldNotBeNull();
+        persistedCompletedAtUtc.Value.ShouldBe(
+            completed.CompletedAtUtc.Value,
+            DatabaseTimestampPrecision);
     }
 
     [Test]

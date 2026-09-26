@@ -68,6 +68,6 @@ public class CreateTaskTests : TestBase
         entity.LastModified.ShouldBe(DateTimeOffset.Now, TimeSpan.FromSeconds(10));
 
         result.OriginalInput.ShouldBe(originalInput);
-        result.CreatedAt.ShouldBe(entity.Created);
+        result.CreatedAt.ShouldBe(entity.Created, DatabaseTimestampPrecision);
     }
 }

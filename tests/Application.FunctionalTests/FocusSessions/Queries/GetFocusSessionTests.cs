@@ -35,7 +35,7 @@ public class GetFocusSessionTests : TestBase
         var result = await TestApp.SendAsync(new GetFocusSessionQuery(session.Id));
 
         result.Id.ShouldBe(session.Id);
-        result.StartedAtUtc.ShouldBe(startedAtUtc);
+        result.StartedAtUtc.ShouldBe(startedAtUtc, DatabaseTimestampPrecision);
         result.CompletedAtUtc.ShouldBeNull();
         (await TestApp.FindAsync<FocusSession>(session.Id))!.CompletedAtUtc.ShouldBeNull();
     }
