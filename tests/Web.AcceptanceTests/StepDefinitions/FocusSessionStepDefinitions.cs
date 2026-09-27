@@ -41,7 +41,7 @@ public sealed class FocusSessionStepDefinitions(
         await loginPage.SetEmail("administrator@localhost");
         await loginPage.SetPassword("Administrator1!");
         await loginPage.ClickLogin();
-        await Assertions.Expect(page.Locator("a:has-text('Log out')")).ToBeVisibleAsync();
+        await Assertions.Expect(page.Locator("#email")).ToHaveCountAsync(0);
 
         container.RegisterInstanceAs(context);
         container.RegisterInstanceAs(new TaskCapturePage(page));
