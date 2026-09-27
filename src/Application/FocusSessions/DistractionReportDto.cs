@@ -1,9 +1,10 @@
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Domain.Entities;
 using FocusPocuss.Domain.Enums;
 
 namespace FocusPocuss.Application.FocusSessions;
 
-public sealed class DistractionEventDto
+public sealed class DistractionReportDto
 {
     public int Id { get; init; }
 
@@ -13,14 +14,19 @@ public sealed class DistractionEventDto
 
     public DateTimeOffset OccurredAtUtc { get; init; }
 
-    internal static DistractionEventDto FromEntity(DistractionEvent distractionEvent)
+    public InterventionStrategy Strategy { get; init; }
+
+    internal static DistractionReportDto FromEntity(
+        DistractionEvent distractionEvent,
+        InterventionStrategy strategy)
     {
-        return new DistractionEventDto
+        return new DistractionReportDto
         {
             Id = distractionEvent.Id,
             FocusSessionId = distractionEvent.FocusSessionId,
             Reason = distractionEvent.Reason,
-            OccurredAtUtc = distractionEvent.OccurredAtUtc
+            OccurredAtUtc = distractionEvent.OccurredAtUtc,
+            Strategy = strategy
         };
     }
 }

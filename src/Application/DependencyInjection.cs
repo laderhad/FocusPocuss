@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Application.Common.Behaviours;
 using Microsoft.Extensions.Hosting;
 
@@ -12,6 +13,8 @@ public static class DependencyInjection
             cfg.AddMaps(Assembly.GetExecutingAssembly()));
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Services.AddSingleton<DistractionInterventionSelector>();
 
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

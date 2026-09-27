@@ -1,4 +1,5 @@
 using FocusPocuss.Application.Common.Exceptions;
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Application.FocusSessions;
 using FocusPocuss.Application.FocusSessions.Commands.CompleteFocusSession;
 using FocusPocuss.Application.FocusSessions.Commands.ReportDistraction;
@@ -53,6 +54,7 @@ public class ReportDistractionTests : TestBase
         result.FocusSessionId.ShouldBe(entity.FocusSessionId);
         result.Reason.ShouldBe(entity.Reason);
         result.OccurredAtUtc.ShouldBe(entity.OccurredAtUtc, DatabaseTimestampPrecision);
+        result.Strategy.ShouldBe(InterventionStrategy.ClarifyNextAction);
     }
 
     [Test]

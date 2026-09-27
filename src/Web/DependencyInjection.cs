@@ -1,4 +1,5 @@
 using Azure.Identity;
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Domain.Enums;
 using FocusPocuss.Infrastructure.Data;
@@ -19,8 +20,12 @@ public static class DependencyInjection
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.ConfigureHttpJsonOptions(options =>
+        {
             options.SerializerOptions.Converters.Add(
-                new JsonStringEnumConverter<DistractionReason>(allowIntegerValues: false)));
+                new JsonStringEnumConverter<DistractionReason>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<InterventionStrategy>(allowIntegerValues: false));
+        });
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 

@@ -45,7 +45,8 @@ public sealed class FocusSessionStepDefinitions(
                       "id": 901,
                       "focusSessionId": {{FocusSessionPage.SessionId}},
                       "reason": "UnclearNextAction",
-                      "occurredAtUtc": "2026-09-25T08:10:00Z"
+                      "occurredAtUtc": "2026-09-25T08:10:00Z",
+                      "strategy": "ClarifyNextAction"
                     }
                     """
             }));

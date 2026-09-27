@@ -1,3 +1,4 @@
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Common.Security;
 using FocusPocuss.Domain.Entities;
@@ -8,26 +9,29 @@ namespace FocusPocuss.Application.FocusSessions.Commands.ReportDistraction;
 [Authorize]
 public record ReportDistractionCommand(
     int FocusSessionId,
-    DistractionReason Reason) : IRequest<DistractionEventDto>;
+    DistractionReason Reason) : IRequest<DistractionReportDto>;
 
 public class ReportDistractionCommandHandler
-    : IRequestHandler<ReportDistractionCommand, DistractionEventDto>
+    : IRequestHandler<ReportDistractionCommand, DistractionReportDto>
 {
     private readonly IApplicationDbContext _context;
+    private readonly DistractionInterventionSelector _interventionSelector;
     private readonly TimeProvider _timeProvider;
     private readonly IUser _user;
 
     public ReportDistractionCommandHandler(
         IApplicationDbContext context,
+        DistractionInterventionSelector interventionSelector,
         TimeProvider timeProvider,
         IUser user)
     {
         _context = context;
+        _interventionSelector = interventionSelector;
         _timeProvider = timeProvider;
         _user = user;
     }
 
-    public async Task<DistractionEventDto> Handle(
+    public async Task<DistractionReportDto> Handle(
         ReportDistractionCommand request,
         CancellationToken cancellationToken)
     {
@@ -40,6 +44,8 @@ public class ReportDistractionCommandHandler
 
         Guard.Against.NotFound(request.FocusSessionId, session);
 
+        var strategy = _interventionSelector.Select(request.Reason);
+
         var distractionEvent = new DistractionEvent(
             session.Id,
             request.Reason,
@@ -49,6 +55,6 @@ public class ReportDistractionCommandHandler
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return DistractionEventDto.FromEntity(distractionEvent);
+        return DistractionReportDto.FromEntity(distractionEvent, strategy);
     }
 }

@@ -50,7 +50,7 @@ public class FocusSessions : IEndpointGroup
 
     [EndpointSummary("Report a distraction")]
     [EndpointDescription("Records why the user became distracted during an owned active focus session.")]
-    public static async Task<Ok<DistractionEventDto>> ReportDistraction(
+    public static async Task<Ok<DistractionReportDto>> ReportDistraction(
         ISender sender,
         int id,
         ReportDistractionRequest request,
