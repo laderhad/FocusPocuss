@@ -14,5 +14,7 @@ public interface IApplicationDbContext
 
     DbSet<FocusSession> FocusSessions { get; }
 
+    DbSet<DistractionEvent> DistractionEvents { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
