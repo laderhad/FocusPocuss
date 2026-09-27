@@ -21,6 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<FocusSession> FocusSessions => Set<FocusSession>();
 
+    public DbSet<DistractionEvent> DistractionEvents => Set<DistractionEvent>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
