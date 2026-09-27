@@ -28,14 +28,31 @@ public class FocusSessionPage(IPage page) : BasePage(page)
             .ToHaveTextAsync("00:00");
         await Assertions.Expect(Page.Locator(".focus-session-expired"))
             .ToBeVisibleAsync();
-        await Assertions.Expect(Page.Locator(".focus-session button"))
+        await Assertions.Expect(Page.Locator(".focus-session button:has-text('Complete session')"))
             .ToHaveTextAsync("Complete session");
     }
 
     public Task CompleteAsync()
-        => Page.Locator(".focus-session button").ClickAsync();
+        => Page.Locator(".focus-session button:has-text('Complete session')").ClickAsync();
 
     public Task AssertCompletedAsync()
         => Assertions.Expect(Page.Locator("#focus-completed-title"))
             .ToHaveTextAsync("Session completed");
+
+    public async Task ReportUnclearNextActionDistractionAsync()
+    {
+        await Page.Locator(".focus-distraction-trigger").ClickAsync();
+        await Page.GetByLabel("The next action is unclear").CheckAsync();
+        await Page.Locator(".focus-distraction-form button[type='submit']").ClickAsync();
+    }
+
+    public async Task AssertDistractionAcknowledgedAndSessionActiveAsync()
+    {
+        await Assertions.Expect(Page.Locator(".focus-distraction-success"))
+            .ToHaveTextAsync("Distraction saved. Your focus session is still active.");
+        await Assertions.Expect(Page.Locator(".focus-session h1"))
+            .ToHaveTextAsync(ExpectedNextAction);
+        await Assertions.Expect(Page.Locator(".focus-session button:has-text('Complete session')"))
+            .ToBeVisibleAsync();
+    }
 }

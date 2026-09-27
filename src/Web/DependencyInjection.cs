@@ -1,8 +1,10 @@
 using Azure.Identity;
 using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Domain.Enums;
 using FocusPocuss.Infrastructure.Data;
 using FocusPocuss.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,10 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUser, CurrentUser>();
 
         builder.Services.AddHttpContextAccessor();
+
+        builder.Services.ConfigureHttpJsonOptions(options =>
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<DistractionReason>(allowIntegerValues: false)));
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 

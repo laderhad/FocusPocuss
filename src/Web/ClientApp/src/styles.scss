@@ -547,6 +547,51 @@ html {
   color: var(--pico-muted-color);
 }
 
+.focus-distraction {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto var(--pico-block-spacing-vertical);
+}
+
+.focus-distraction-form {
+  padding-top: var(--pico-block-spacing-vertical);
+  border-top: var(--pico-border-width) solid var(--pico-muted-border-color);
+  text-align: left;
+
+  fieldset {
+    margin-bottom: var(--pico-spacing);
+  }
+
+  legend {
+    margin-bottom: var(--pico-spacing);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  input {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+
+.focus-distraction-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.focus-distraction-success {
+  margin: 0;
+  color: var(--pico-primary);
+}
+
 .focus-session-result {
   svg {
     margin-bottom: var(--pico-spacing);
@@ -621,6 +666,15 @@ html {
 
   .focus-session-timer time {
     font-size: 3rem;
+  }
+
+  .focus-distraction-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
   }
 }
 

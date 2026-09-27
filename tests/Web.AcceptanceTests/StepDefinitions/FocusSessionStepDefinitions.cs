@@ -35,6 +35,20 @@ public sealed class FocusSessionStepDefinitions(
             FulfillSessionAsync(route, completed: false));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/complete", route =>
             FulfillSessionAsync(route, completed: true));
+        await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/distractions", route =>
+            route.FulfillAsync(new RouteFulfillOptions
+            {
+                Status = 200,
+                ContentType = "application/json",
+                Body = $$"""
+                    {
+                      "id": 901,
+                      "focusSessionId": {{FocusSessionPage.SessionId}},
+                      "reason": "UnclearNextAction",
+                      "occurredAtUtc": "2026-09-25T08:10:00Z"
+                    }
+                    """
+            }));
 
         var loginPage = new LoginPage(page);
         await loginPage.GotoAsync();
@@ -82,6 +96,14 @@ public sealed class FocusSessionStepDefinitions(
     [Then("the focus session is shown as completed")]
     public Task ThenTheFocusSessionIsShownAsCompleted()
         => focusSessionPage.AssertCompletedAsync();
+
+    [When("the user reports an unclear next action distraction")]
+    public Task WhenTheUserReportsAnUnclearNextActionDistraction()
+        => focusSessionPage.ReportUnclearNextActionDistractionAsync();
+
+    [Then("the distraction is acknowledged and the focus session remains active")]
+    public Task ThenTheDistractionIsAcknowledgedAndTheFocusSessionRemainsActive()
+        => focusSessionPage.AssertDistractionAcknowledgedAndSessionActiveAsync();
 
     private static Task FulfillSessionAsync(IRoute route, bool completed)
     {

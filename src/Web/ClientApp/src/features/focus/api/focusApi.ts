@@ -1,6 +1,9 @@
 import {
+  DistractionReason,
   FocusSessionsClient,
+  ReportDistractionRequest,
   StartFocusSessionRequest,
+  type DistractionEventDto,
   type FocusSessionDto,
 } from '../../../web-api-client';
 
@@ -33,4 +36,15 @@ export function completeFocusSession(sessionId: number): Promise<FocusSessionDto
   return focusSessionsClient.completeFocusSession(sessionId);
 }
 
-export type { FocusSessionDto };
+export function reportDistraction(
+  sessionId: number,
+  reason: DistractionReason,
+): Promise<DistractionEventDto> {
+  return focusSessionsClient.reportDistraction(
+    sessionId,
+    new ReportDistractionRequest({ reason }),
+  );
+}
+
+export { DistractionReason };
+export type { DistractionEventDto, FocusSessionDto };

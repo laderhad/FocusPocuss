@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { FocusSessionDto } from '../api/focusApi';
 import { useRemainingSeconds } from '../model/useRemainingSeconds';
+import { DistractionReporter } from './DistractionReporter';
 
 interface FocusSessionViewProps {
+  sessionId: number;
   session: FocusSessionDto;
   isCompleting: boolean;
   completionFailed: boolean;
@@ -18,6 +20,7 @@ function formatRemainingTime(totalSeconds: number) {
 }
 
 export function FocusSessionView({
+  sessionId,
   session,
   isCompleting,
   completionFailed,
@@ -64,6 +67,8 @@ export function FocusSessionView({
           {t('focus.session.expired')}
         </p>
       )}
+
+      <DistractionReporter sessionId={sessionId} />
 
       <button type="button" disabled={isCompleting} onClick={onComplete}>
         <Check size={18} aria-hidden="true" />

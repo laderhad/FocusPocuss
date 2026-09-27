@@ -39,6 +39,7 @@ export function FocusSessionPage() {
   return (
     <div className="focus-session-page">
       <FocusSessionView
+        sessionId={parsedSessionId}
         session={sessionQuery.data}
         isCompleting={completeSession.isPending}
         completionFailed={completeSession.isError}

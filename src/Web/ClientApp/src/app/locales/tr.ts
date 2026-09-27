@@ -76,6 +76,23 @@ export const tr = {
       backToTask: 'Göreve dön',
       backToTasks: 'Görevlere dön',
     },
+    distraction: {
+      action: 'Dikkatim dağıldı',
+      title: 'Seni ne uzaklaştırdı?',
+      submit: 'Nedeni kaydet',
+      saving: 'Kaydediliyor...',
+      cancel: 'Vazgeç',
+      success: 'Dikkat dağılması kaydedildi. Odak oturumun hâlâ aktif.',
+      error: 'Dikkat dağılması kaydedilemedi. Tekrar dene.',
+      reasons: {
+        taskTooDifficult: 'Görev çok zor geliyor',
+        unclearNextAction: 'Sonraki adım net değil',
+        phoneOrSocialMedia: 'Telefon veya sosyal medya',
+        anotherThought: 'Başka bir düşünce aklıma geldi',
+        tired: 'Yorgunum',
+        other: 'Başka bir şey',
+      },
+    },
   },
   auth: {
     login: {

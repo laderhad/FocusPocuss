@@ -76,6 +76,23 @@ export const en = {
       backToTask: 'Back to task',
       backToTasks: 'Back to tasks',
     },
+    distraction: {
+      action: "I'm distracted",
+      title: 'What pulled you away?',
+      submit: 'Save reason',
+      saving: 'Saving...',
+      cancel: 'Cancel',
+      success: 'Distraction saved. Your focus session is still active.',
+      error: 'The distraction could not be saved. Try again.',
+      reasons: {
+        taskTooDifficult: 'The task feels too difficult',
+        unclearNextAction: 'The next action is unclear',
+        phoneOrSocialMedia: 'Phone or social media',
+        anotherThought: 'Another thought pulled me away',
+        tired: "I'm tired",
+        other: 'Something else',
+      },
+    },
   },
   auth: {
     login: {

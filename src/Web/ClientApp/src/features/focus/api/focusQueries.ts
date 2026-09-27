@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   completeFocusSession,
   getFocusSession,
+  reportDistraction,
   startFocusSession,
+  type DistractionReason,
   type FocusSessionDto,
 } from './focusApi';
 
@@ -45,5 +47,11 @@ export function useCompleteFocusSession(sessionId: number) {
         session,
       );
     },
+  });
+}
+
+export function useReportDistraction(sessionId: number) {
+  return useMutation({
+    mutationFn: (reason: DistractionReason) => reportDistraction(sessionId, reason),
   });
 }
