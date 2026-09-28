@@ -588,8 +588,23 @@ html {
 }
 
 .focus-distraction-success {
-  margin: 0;
+  padding-top: var(--pico-block-spacing-vertical);
+  border-top: var(--pico-border-width) solid var(--pico-muted-border-color);
+  text-align: left;
+}
+
+.focus-distraction-success-title {
+  margin-bottom: 0.35rem;
   color: var(--pico-primary);
+  font-weight: 600;
+}
+
+.focus-distraction-message {
+  margin: 0;
+}
+
+.focus-distraction-return {
+  margin-top: var(--pico-spacing);
 }
 
 .focus-session-result {

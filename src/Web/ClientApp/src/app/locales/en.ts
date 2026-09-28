@@ -84,6 +84,8 @@ export const en = {
       cancel: 'Cancel',
       success: 'Distraction saved. Your focus session is still active.',
       error: 'The distraction could not be saved. Try again.',
+      recoveryTitle: 'Try this now',
+      returnToFocus: 'Return to focus',
       reasons: {
         taskTooDifficult: 'The task feels too difficult',
         unclearNextAction: 'The next action is unclear',
@@ -91,6 +93,16 @@ export const en = {
         anotherThought: 'Another thought pulled me away',
         tired: "I'm tired",
         other: 'Something else',
+      },
+      interventions: {
+        taskDecomposition:
+          'Make it smaller. Choose one part you can work on for the next few minutes.',
+        clarifyNextAction: 'Name the next physical action, then do only that.',
+        removeFriction:
+          'Move the distraction out of reach, then return to the current action.',
+        distractionRecovery:
+          "Let the thought wait. Return to the current action when you're ready.",
+        breakRecommendation: 'A short break may help. Return when you are ready.',
       },
     },
   },

@@ -14,4 +14,6 @@ Scenario: User reports why they became distracted
     Given an authenticated user has a task start recommendation
     When the user starts the focus session
     And the user reports an unclear next action distraction
-    Then the distraction is acknowledged and the focus session remains active
+    Then the selected recovery guidance is shown
+    When the user returns to focus
+    Then the recovery guidance is dismissed and the focus session remains active

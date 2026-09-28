@@ -1,7 +1,7 @@
-import { CircleAlert } from 'lucide-react';
+import { CircleAlert, Focus as FocusIcon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DistractionReason } from '../api/focusApi';
+import { DistractionReason, InterventionStrategy } from '../api/focusApi';
 import { useReportDistraction } from '../api/focusQueries';
 
 const reasonOptions = [
@@ -31,6 +31,19 @@ const reasonOptions = [
   },
 ] as const;
 
+const interventionMessageKeys: Record<InterventionStrategy, string> = {
+  [InterventionStrategy.TaskDecomposition]:
+    'focus.distraction.interventions.taskDecomposition',
+  [InterventionStrategy.ClarifyNextAction]:
+    'focus.distraction.interventions.clarifyNextAction',
+  [InterventionStrategy.RemoveFriction]:
+    'focus.distraction.interventions.removeFriction',
+  [InterventionStrategy.DistractionRecovery]:
+    'focus.distraction.interventions.distractionRecovery',
+  [InterventionStrategy.BreakRecommendation]:
+    'focus.distraction.interventions.breakRecommendation',
+};
+
 interface DistractionReporterProps {
   sessionId: number;
 }
@@ -41,10 +54,12 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState<DistractionReason>();
   const [isAcknowledged, setIsAcknowledged] = useState(false);
+  const [selectedStrategy, setSelectedStrategy] = useState<InterventionStrategy>();
 
   const open = () => {
     reportDistraction.reset();
     setIsAcknowledged(false);
+    setSelectedStrategy(undefined);
     setIsOpen(true);
   };
 
@@ -62,17 +77,24 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
     }
 
     reportDistraction.mutate(selectedReason, {
-      onSuccess: () => {
+      onSuccess: report => {
         setSelectedReason(undefined);
+        setSelectedStrategy(report.strategy);
         setIsOpen(false);
         setIsAcknowledged(true);
       },
     });
   };
 
+  const returnToFocus = () => {
+    reportDistraction.reset();
+    setSelectedStrategy(undefined);
+    setIsAcknowledged(false);
+  };
+
   return (
     <section className="focus-distraction" aria-label={t('focus.distraction.title')}>
-      {!isOpen && (
+      {!isOpen && !isAcknowledged && (
         <button
           type="button"
           className="secondary outline focus-distraction-trigger"
@@ -135,9 +157,26 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
       )}
 
       {isAcknowledged && (
-        <p className="focus-distraction-success" role="status">
-          {t('focus.distraction.success')}
-        </p>
+        <div className="focus-distraction-success" role="status">
+          <p className="focus-distraction-success-title">
+            {t('focus.distraction.recoveryTitle')}
+          </p>
+          <p className="focus-distraction-message">
+            {t(
+              selectedStrategy === undefined
+                ? 'focus.distraction.success'
+                : interventionMessageKeys[selectedStrategy],
+            )}
+          </p>
+          <button
+            type="button"
+            className="focus-distraction-return"
+            onClick={returnToFocus}
+          >
+            <FocusIcon size={18} aria-hidden="true" />
+            {t('focus.distraction.returnToFocus')}
+          </button>
+        </div>
       )}
     </section>
   );

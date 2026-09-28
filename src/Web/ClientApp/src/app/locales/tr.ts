@@ -84,6 +84,8 @@ export const tr = {
       cancel: 'Vazgeç',
       success: 'Dikkat dağılması kaydedildi. Odak oturumun hâlâ aktif.',
       error: 'Dikkat dağılması kaydedilemedi. Tekrar dene.',
+      recoveryTitle: 'Şimdi bunu dene',
+      returnToFocus: 'Odağa dön',
       reasons: {
         taskTooDifficult: 'Görev çok zor geliyor',
         unclearNextAction: 'Sonraki adım net değil',
@@ -91,6 +93,16 @@ export const tr = {
         anotherThought: 'Başka bir düşünce aklıma geldi',
         tired: 'Yorgunum',
         other: 'Başka bir şey',
+      },
+      interventions: {
+        taskDecomposition:
+          'Küçült. Önümüzdeki birkaç dakika çalışabileceğin tek bir parça seç.',
+        clarifyNextAction: 'Bir sonraki somut hareketi adlandır, sonra yalnızca onu yap.',
+        removeFriction:
+          'Dikkat dağıtıcıyı erişemeyeceğin bir yere koy, sonra mevcut adıma dön.',
+        distractionRecovery:
+          'Bu düşünce bekleyebilir. Hazır olduğunda mevcut adıma dön.',
+        breakRecommendation: 'Kısa bir mola yardımcı olabilir. Hazır olduğunda geri dön.',
       },
     },
   },

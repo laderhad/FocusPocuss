@@ -1,6 +1,7 @@
 import {
   DistractionReason,
   FocusSessionsClient,
+  InterventionStrategy,
   ReportDistractionRequest,
   StartFocusSessionRequest,
   type DistractionReportDto,
@@ -46,5 +47,5 @@ export function reportDistraction(
   );
 }
 
-export { DistractionReason };
+export { DistractionReason, InterventionStrategy };
 export type { DistractionReportDto, FocusSessionDto };

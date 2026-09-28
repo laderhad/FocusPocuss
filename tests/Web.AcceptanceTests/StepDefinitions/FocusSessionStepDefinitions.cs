@@ -102,9 +102,17 @@ public sealed class FocusSessionStepDefinitions(
     public Task WhenTheUserReportsAnUnclearNextActionDistraction()
         => focusSessionPage.ReportUnclearNextActionDistractionAsync();
 
-    [Then("the distraction is acknowledged and the focus session remains active")]
-    public Task ThenTheDistractionIsAcknowledgedAndTheFocusSessionRemainsActive()
-        => focusSessionPage.AssertDistractionAcknowledgedAndSessionActiveAsync();
+    [Then("the selected recovery guidance is shown")]
+    public Task ThenTheSelectedRecoveryGuidanceIsShown()
+        => focusSessionPage.AssertRecoveryGuidanceAsync();
+
+    [When("the user returns to focus")]
+    public Task WhenTheUserReturnsToFocus()
+        => focusSessionPage.ReturnToFocusAsync();
+
+    [Then("the recovery guidance is dismissed and the focus session remains active")]
+    public Task ThenTheRecoveryGuidanceIsDismissedAndTheFocusSessionRemainsActive()
+        => focusSessionPage.AssertRecoveryDismissedAndSessionActiveAsync();
 
     private static Task FulfillSessionAsync(IRoute route, bool completed)
     {
