@@ -4,6 +4,7 @@ using FocusPocuss.Application.FocusSessions.Commands.RecordFocusSessionReflectio
 using FocusPocuss.Application.FocusSessions.Commands.ReportDistraction;
 using FocusPocuss.Application.FocusSessions.Commands.StartFocusSession;
 using FocusPocuss.Application.FocusSessions.Queries.GetFocusSession;
+using FocusPocuss.Application.FocusSessions.Queries.GetFocusSessionHistory;
 using FocusPocuss.Domain.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -18,6 +19,7 @@ public class FocusSessions : IEndpointGroup
         groupBuilder.RequireAuthorization();
 
         groupBuilder.MapPut(StartFocusSession, "active");
+        groupBuilder.MapGet(GetFocusSessionHistory, "history");
         groupBuilder.MapGet(GetFocusSession, "{id:int}");
         groupBuilder.MapPost(ReportDistraction, "{id:int}/distractions");
         groupBuilder.MapPut(CompleteFocusSession, "{id:int}/complete");
@@ -48,6 +50,19 @@ public class FocusSessions : IEndpointGroup
         var session = await sender.Send(new GetFocusSessionQuery(id), cancellationToken);
 
         return TypedResults.Ok(session);
+    }
+
+    [EndpointSummary("Get focus session history")]
+    [EndpointDescription("Retrieves the current user's focus sessions, newest first.")]
+    public static async Task<Ok<IReadOnlyList<FocusSessionHistoryItemDto>>> GetFocusSessionHistory(
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var sessions = await sender.Send(
+            new GetFocusSessionHistoryQuery(),
+            cancellationToken);
+
+        return TypedResults.Ok(sessions);
     }
 
     [EndpointSummary("Report a distraction")]
