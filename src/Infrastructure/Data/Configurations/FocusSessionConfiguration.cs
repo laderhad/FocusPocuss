@@ -16,6 +16,11 @@ public class FocusSessionConfiguration : IEntityTypeConfiguration<FocusSession>
             .HasMaxLength(500)
             .IsRequired();
 
+        builder.ToTable(table => table.HasCheckConstraint(
+            "CK_FocusSessions_ReflectionState",
+            "(\"Reflection\" IS NULL AND \"ReflectedAtUtc\" IS NULL) OR "
+                + "(\"Reflection\" BETWEEN 1 AND 3 AND \"ReflectedAtUtc\" IS NOT NULL)"));
+
         builder.HasIndex(session => session.UserId)
             .IsUnique()
             .HasFilter("\"CompletedAtUtc\" IS NULL")

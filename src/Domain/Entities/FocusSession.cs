@@ -38,6 +38,10 @@ public class FocusSession : BaseAuditableEntity
 
     public DateTimeOffset? CompletedAtUtc { get; private set; }
 
+    public FocusSessionReflection? Reflection { get; private set; }
+
+    public DateTimeOffset? ReflectedAtUtc { get; private set; }
+
     public TaskItem TaskItem { get; private set; } = null!;
 
     public TaskStartPlan TaskStartPlan { get; private set; } = null!;
@@ -47,5 +51,27 @@ public class FocusSession : BaseAuditableEntity
     public void Complete(DateTimeOffset completedAtUtc)
     {
         CompletedAtUtc ??= completedAtUtc;
+    }
+
+    public void RecordReflection(
+        FocusSessionReflection reflection,
+        DateTimeOffset reflectedAtUtc)
+    {
+        if (CompletedAtUtc is null)
+        {
+            throw new InvalidOperationException(
+                "A reflection can only be recorded for a completed focus session.");
+        }
+
+        if (!Enum.IsDefined(reflection))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(reflection),
+                reflection,
+                "Unsupported focus session reflection.");
+        }
+
+        Reflection = reflection;
+        ReflectedAtUtc = reflectedAtUtc.ToUniversalTime();
     }
 }
