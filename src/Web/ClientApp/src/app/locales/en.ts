@@ -4,8 +4,6 @@ export const en = {
   },
   navigation: {
     home: 'Home',
-    counter: 'Counter',
-    weather: 'Weather',
     tasks: 'Tasks',
     history: 'Session history',
     login: 'Log in',
@@ -16,6 +14,11 @@ export const en = {
     auto: 'Use system theme',
     light: 'Use light theme',
     dark: 'Use dark theme',
+  },
+  home: {
+    title: 'For the moments when starting feels hard.',
+    description: 'FocusPocuss helps you find the first small step and return when your focus breaks.',
+    action: 'Find your first step',
   },
   tasks: {
     title: 'Tasks',

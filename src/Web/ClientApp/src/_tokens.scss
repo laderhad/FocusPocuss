@@ -1,0 +1,129 @@
+// Calm Kinetic: semantic values shared by the existing Pico baseline and features.
+:root {
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-numeric: "JetBrains Mono", monospace;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --text-heading-sm: 1.25rem;
+  --text-heading-md: 1.5rem;
+  --text-heading-lg: 2rem;
+  --text-display: clamp(2rem, 4vw, 3rem);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --motion-fast: 120ms;
+  --motion-normal: 190ms;
+  --motion-reward: 520ms;
+  --target-size: 44px;
+}
+
+:root,
+[data-theme="light"] {
+  --color-canvas: #f7f7f2;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eeeee8;
+  --color-ink: #17181c;
+  --color-muted: #62635f;
+  --color-border: #d9d9d0;
+  --color-control-border: #85867e;
+  --color-brand: #5b4de8;
+  --color-brand-hover: #493bc7;
+  --color-on-brand: #ffffff;
+  --color-momentum: #d9f27c;
+  --color-on-momentum: #17181c;
+  --color-warm-alert: #c96c3b;
+  // The warm accent needs a darker companion for readable small error text.
+  --color-alert-ink: #9b4923;
+  --color-success: #387044;
+}
+
+@mixin dark-colors {
+  --color-canvas: #111216;
+  --color-surface: #191a20;
+  --color-surface-muted: #24252c;
+  --color-ink: #f5f5f2;
+  --color-muted: #b4b5af;
+  --color-border: #383940;
+  --color-control-border: #797a84;
+  --color-brand: #a99eff;
+  --color-brand-hover: #c1b9ff;
+  --color-on-brand: #17181c;
+  --color-warm-alert: #f4b183;
+  --color-alert-ink: #f4b183;
+  --color-success: #a3d6aa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    @include dark-colors;
+  }
+}
+
+[data-theme="dark"] {
+  @include dark-colors;
+}
+
+// Keep Pico's native controls and semantics; override its theme at one boundary.
+:root:not([data-theme]),
+:root[data-theme],
+[data-theme] {
+  --pico-font-family-sans-serif: var(--font-body);
+  --pico-font-family-monospace: var(--font-numeric);
+  --pico-font-size: 100%;
+  --pico-line-height: 1.6;
+  --pico-border-radius: var(--radius-sm);
+  --pico-spacing: var(--space-4);
+  --pico-transition: var(--motion-normal) ease;
+  --pico-background-color: var(--color-canvas);
+  --pico-color: var(--color-ink);
+  --pico-muted-color: var(--color-muted);
+  --pico-muted-border-color: var(--color-border);
+  --pico-primary: var(--color-brand);
+  --pico-primary-background: var(--color-brand);
+  --pico-primary-border: var(--color-brand);
+  --pico-primary-underline: var(--color-brand);
+  --pico-primary-hover: var(--color-brand-hover);
+  --pico-primary-hover-background: var(--color-brand-hover);
+  --pico-primary-hover-border: var(--color-brand-hover);
+  --pico-primary-hover-underline: var(--color-brand-hover);
+  --pico-primary-inverse: var(--color-on-brand);
+  --pico-primary-focus: color-mix(in srgb, var(--color-brand) 25%, transparent);
+  --pico-secondary: var(--color-muted);
+  --pico-secondary-hover: var(--color-ink);
+  --pico-secondary-focus: var(--pico-primary-focus);
+  --pico-contrast: var(--color-ink);
+  --pico-h1-color: var(--color-ink);
+  --pico-h2-color: var(--color-ink);
+  --pico-h3-color: var(--color-ink);
+  --pico-h4-color: var(--color-ink);
+  --pico-h5-color: var(--color-ink);
+  --pico-h6-color: var(--color-ink);
+  --pico-card-background-color: var(--color-surface);
+  --pico-card-border-color: var(--color-border);
+  --pico-card-sectioning-background-color: var(--color-surface-muted);
+  --pico-card-box-shadow: none;
+  --pico-form-element-background-color: var(--color-surface);
+  --pico-form-element-active-background-color: var(--color-surface);
+  --pico-form-element-selected-background-color: var(--color-surface-muted);
+  --pico-form-element-color: var(--color-ink);
+  --pico-form-element-placeholder-color: var(--color-muted);
+  --pico-form-element-border-color: var(--color-control-border);
+  --pico-form-element-active-border-color: var(--color-brand);
+  --pico-form-element-focus-color: var(--pico-primary-focus);
+  --pico-form-element-invalid-border-color: var(--color-alert-ink);
+  --pico-form-element-invalid-active-border-color: var(--color-alert-ink);
+  --pico-form-element-invalid-focus-color: var(--color-alert-ink);
+  --pico-form-element-valid-border-color: var(--color-success);
+  --pico-form-element-valid-active-border-color: var(--color-success);
+  --pico-form-element-valid-focus-color: var(--color-success);
+  --pico-del-color: var(--color-alert-ink);
+  --pico-ins-color: var(--color-success);
+}

@@ -4,8 +4,6 @@ export const tr = {
   },
   navigation: {
     home: 'Ana sayfa',
-    counter: 'Sayaç',
-    weather: 'Hava durumu',
     tasks: 'Görevler',
     history: 'Oturum geçmişi',
     login: 'Giriş yap',
@@ -16,6 +14,11 @@ export const tr = {
     auto: 'Sistem temasını kullan',
     light: 'Açık temayı kullan',
     dark: 'Koyu temayı kullan',
+  },
+  home: {
+    title: 'Başlamanın zor olduğu anlar için.',
+    description: 'FocusPocuss, ilk küçük adımı bulmana ve dağıldığında geri dönmene yardımcı olur.',
+    action: 'İlk küçük adımını bul',
   },
   tasks: {
     title: 'Görevler',

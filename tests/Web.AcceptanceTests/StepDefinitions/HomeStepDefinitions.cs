@@ -6,7 +6,7 @@ public sealed class HomeStepDefinitions(HomePage homePage)
     [BeforeFeature("Home")]
     public static async Task BeforeHomeFeature(IObjectContainer container)
     {
-        var context = await PlaywrightSetup.NewContextAsync();
+        var context = await PlaywrightSetup.NewContextAsync(new() { Locale = "en-US" });
         var page = await context.NewPageAsync();
         container.RegisterInstanceAs(context);
         container.RegisterInstanceAs(new HomePage(page));
@@ -24,4 +24,13 @@ public sealed class HomeStepDefinitions(HomePage homePage)
 
     [Then("the heading {string} is visible")]
     public Task ThenTheHeadingIsVisible(string text) => homePage.AssertHeading(text);
+
+    [When("the home language is changed to {string}")]
+    public Task WhenTheHomeLanguageIsChanged(string language) => homePage.ChangeLanguage(language);
+
+    [When("the system appearance is {string} and the selected theme is {string}")]
+    public Task WhenTheThemeIsChanged(string system, string theme) => homePage.ChangeTheme(system, theme);
+
+    [Then("the home canvas is {string} and the primary action is {string}")]
+    public Task ThenTheHomeColorsAreApplied(string canvas, string primary) => homePage.AssertColors(canvas, primary);
 }

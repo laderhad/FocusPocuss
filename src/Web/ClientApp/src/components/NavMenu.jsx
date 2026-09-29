@@ -33,12 +33,10 @@ export function NavMenu() {
     <header>
       <nav>
         <ul>
-          <li><Link to="/">FocusPocus</Link></li>
+          <li><Link to="/">FocusPocuss</Link></li>
         </ul>
         <ul>
           <li><Link to="/">{t('navigation.home')}</Link></li>
-          <li><Link to="/counter">{t('navigation.counter')}</Link></li>
-          <li><Link to="/weather">{t('navigation.weather')}</Link></li>
           <li><Link to="/tasks">{t('navigation.tasks')}</Link></li>
           <li><Link to="/history">{t('navigation.history')}</Link></li>
         </ul>
