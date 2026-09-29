@@ -1,9 +1,11 @@
 import { Check, Clock3 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { FocusSessionDto } from '../api/focusApi';
 import { useRemainingSeconds } from '../model/useRemainingSeconds';
 import { DistractionReporter } from './DistractionReporter';
+import { FocusSessionReflectionPrompt } from './FocusSessionReflectionPrompt';
 
 interface FocusSessionViewProps {
   sessionId: number;
@@ -27,12 +29,28 @@ export function FocusSessionView({
   onComplete,
 }: FocusSessionViewProps) {
   const { t } = useTranslation();
+  const [skippedReflectionSessionId, setSkippedReflectionSessionId] =
+    useState<number>();
   const isCompleted = session.completedAtUtc !== undefined;
   const remainingSeconds = useRemainingSeconds(
     session.startedAtUtc,
     session.plannedDurationMinutes,
     !isCompleted,
   );
+
+  if (
+    isCompleted &&
+    session.reflection === undefined &&
+    skippedReflectionSessionId !== sessionId
+  ) {
+    return (
+      <FocusSessionReflectionPrompt
+        key={sessionId}
+        sessionId={sessionId}
+        onSkip={() => setSkippedReflectionSessionId(sessionId)}
+      />
+    );
+  }
 
   if (isCompleted) {
     const taskPath = session.taskId ? `/tasks/${session.taskId}` : '/tasks';

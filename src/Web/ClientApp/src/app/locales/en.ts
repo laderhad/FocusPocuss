@@ -76,6 +76,17 @@ export const en = {
       backToTask: 'Back to task',
       backToTasks: 'Back to tasks',
     },
+    reflection: {
+      title: 'How did that focus session feel?',
+      saving: 'Saving...',
+      skip: 'Skip',
+      error: 'Your reflection could not be saved. Try again.',
+      options: {
+        focusedWell: 'I focused well',
+        someDifficulty: 'I had some difficulty',
+        significantDifficulty: 'I had significant difficulty',
+      },
+    },
     distraction: {
       action: "I'm distracted",
       title: 'What pulled you away?',

@@ -1,7 +1,9 @@
 import {
   DistractionReason,
+  FocusSessionReflection,
   FocusSessionsClient,
   InterventionStrategy,
+  RecordFocusSessionReflectionRequest,
   ReportDistractionRequest,
   StartFocusSessionRequest,
   type DistractionReportDto,
@@ -37,6 +39,16 @@ export function completeFocusSession(sessionId: number): Promise<FocusSessionDto
   return focusSessionsClient.completeFocusSession(sessionId);
 }
 
+export function recordFocusSessionReflection(
+  sessionId: number,
+  reflection: FocusSessionReflection,
+): Promise<FocusSessionDto> {
+  return focusSessionsClient.recordFocusSessionReflection(
+    sessionId,
+    new RecordFocusSessionReflectionRequest({ reflection }),
+  );
+}
+
 export function reportDistraction(
   sessionId: number,
   reason: DistractionReason,
@@ -47,5 +59,5 @@ export function reportDistraction(
   );
 }
 
-export { DistractionReason, InterventionStrategy };
+export { DistractionReason, FocusSessionReflection, InterventionStrategy };
 export type { DistractionReportDto, FocusSessionDto };

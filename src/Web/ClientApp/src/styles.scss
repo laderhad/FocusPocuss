@@ -501,7 +501,8 @@ html {
 }
 
 .focus-session,
-.focus-session-result {
+.focus-session-result,
+.focus-reflection {
   width: 100%;
   max-width: 46rem;
   margin: 0;
@@ -623,6 +624,30 @@ html {
   }
 }
 
+.focus-reflection {
+  h1 {
+    margin-bottom: calc(var(--pico-block-spacing-vertical) * 1.5);
+    font-size: 2rem;
+  }
+}
+
+.focus-reflection-options {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 26rem;
+  margin: 0 auto var(--pico-block-spacing-vertical);
+
+  button {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.focus-reflection-skip {
+  width: auto;
+  margin: 0;
+}
+
 .focus-session-state {
   align-content: center;
   text-align: center;
@@ -675,7 +700,8 @@ html {
   }
 
   .focus-session h1,
-  .focus-session-result h1 {
+  .focus-session-result h1,
+  .focus-reflection h1 {
     font-size: 1.5rem;
   }
 
