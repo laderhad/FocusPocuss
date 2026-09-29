@@ -1,4 +1,5 @@
 ﻿using FocusPocuss.Domain.Entities;
+using FocusPocuss.Domain.Enums;
 
 namespace FocusPocuss.Application.FocusSessions;
 
@@ -18,6 +19,10 @@ public sealed class FocusSessionDto
 
     public DateTimeOffset? CompletedAtUtc { get; init; }
 
+    public FocusSessionReflection? Reflection { get; init; }
+
+    public DateTimeOffset? ReflectedAtUtc { get; init; }
+
     internal static FocusSessionDto FromEntity(FocusSession session)
     {
         return new FocusSessionDto
@@ -28,7 +33,9 @@ public sealed class FocusSessionDto
             Action = session.Action,
             PlannedDurationMinutes = session.PlannedDurationMinutes,
             StartedAtUtc = session.StartedAtUtc,
-            CompletedAtUtc = session.CompletedAtUtc
+            CompletedAtUtc = session.CompletedAtUtc,
+            Reflection = session.Reflection,
+            ReflectedAtUtc = session.ReflectedAtUtc
         };
     }
 }

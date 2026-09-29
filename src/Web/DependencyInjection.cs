@@ -25,6 +25,8 @@ public static class DependencyInjection
                 new JsonStringEnumConverter<DistractionReason>(allowIntegerValues: false));
             options.SerializerOptions.Converters.Add(
                 new JsonStringEnumConverter<InterventionStrategy>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<FocusSessionReflection>(allowIntegerValues: false));
         });
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
@@ -39,6 +41,7 @@ public static class DependencyInjection
         {
             options.AddOperationTransformer<ApiExceptionOperationTransformer>();
             options.AddOperationTransformer<IdentityApiOperationTransformer>();
+            options.AddSchemaTransformer<FocusSessionReflectionSchemaTransformer>();
         });
 
         builder.Services.AddCors();

@@ -1,5 +1,6 @@
 using FocusPocuss.Application.FocusSessions;
 using FocusPocuss.Application.FocusSessions.Commands.CompleteFocusSession;
+using FocusPocuss.Application.FocusSessions.Commands.RecordFocusSessionReflection;
 using FocusPocuss.Application.FocusSessions.Commands.ReportDistraction;
 using FocusPocuss.Application.FocusSessions.Commands.StartFocusSession;
 using FocusPocuss.Application.FocusSessions.Queries.GetFocusSession;
@@ -20,6 +21,7 @@ public class FocusSessions : IEndpointGroup
         groupBuilder.MapGet(GetFocusSession, "{id:int}");
         groupBuilder.MapPost(ReportDistraction, "{id:int}/distractions");
         groupBuilder.MapPut(CompleteFocusSession, "{id:int}/complete");
+        groupBuilder.MapPut(RecordFocusSessionReflection, "{id:int}/reflection");
     }
 
     [EndpointSummary("Start or resume a focus session")]
@@ -76,8 +78,25 @@ public class FocusSessions : IEndpointGroup
 
         return TypedResults.Ok(session);
     }
+
+    [EndpointSummary("Record a focus session reflection")]
+    [EndpointDescription("Records or updates the reflection for an owned completed focus session.")]
+    public static async Task<Ok<FocusSessionDto>> RecordFocusSessionReflection(
+        ISender sender,
+        int id,
+        RecordFocusSessionReflectionRequest request,
+        CancellationToken cancellationToken)
+    {
+        var session = await sender.Send(
+            new RecordFocusSessionReflectionCommand(id, request.Reflection),
+            cancellationToken);
+
+        return TypedResults.Ok(session);
+    }
 }
 
 public sealed record StartFocusSessionRequest(int TaskId, int TaskStartPlanId);
 
 public sealed record ReportDistractionRequest(DistractionReason Reason);
+
+public sealed record RecordFocusSessionReflectionRequest(FocusSessionReflection Reflection);
