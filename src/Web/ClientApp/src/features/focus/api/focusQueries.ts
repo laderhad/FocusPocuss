@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   completeFocusSession,
   getFocusSession,
+  getFocusSessionHistory,
   recordFocusSessionReflection,
   reportDistraction,
   startFocusSession,
@@ -11,8 +12,16 @@ import {
 } from './focusApi';
 
 const focusSessionKeys = {
+  history: ['focus-sessions', 'history'] as const,
   detail: (sessionId: number) => ['focus-sessions', sessionId] as const,
 };
+
+export function useFocusSessionHistory() {
+  return useQuery({
+    queryKey: focusSessionKeys.history,
+    queryFn: getFocusSessionHistory,
+  });
+}
 
 export function useFocusSession(sessionId: number) {
   return useQuery({
@@ -34,6 +43,7 @@ export function useStartFocusSession() {
           session,
         );
       }
+      void queryClient.invalidateQueries({ queryKey: focusSessionKeys.history });
     },
   });
 }
@@ -48,6 +58,7 @@ export function useCompleteFocusSession(sessionId: number) {
         focusSessionKeys.detail(sessionId),
         session,
       );
+      void queryClient.invalidateQueries({ queryKey: focusSessionKeys.history });
     },
   });
 }
@@ -69,6 +80,7 @@ export function useRecordFocusSessionReflection(sessionId: number) {
         focusSessionKeys.detail(sessionId),
         session,
       );
+      void queryClient.invalidateQueries({ queryKey: focusSessionKeys.history });
     },
   });
 }

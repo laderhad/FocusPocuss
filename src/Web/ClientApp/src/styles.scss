@@ -395,6 +395,92 @@ html {
   }
 }
 
+.session-history-page {
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+
+  > header {
+    margin-bottom: calc(var(--pico-block-spacing-vertical) * 1.5);
+
+    h1 {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.session-history-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.session-history-item {
+  display: grid;
+  gap: 0.65rem;
+  padding-block: var(--pico-spacing);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.session-history-item-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--pico-spacing);
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pico-primary);
+    }
+  }
+}
+
+.session-history-status {
+  flex: 0 0 auto;
+  color: var(--pico-muted-color);
+  font-size: 0.875rem;
+}
+
+.session-history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  color: var(--pico-muted-color);
+  font-size: 0.875rem;
+}
+
+.session-history-reflection {
+  margin: 0;
+  padding-inline-start: 0.75rem;
+  border-inline-start: 2px solid var(--pico-primary-border);
+}
+
+.session-history-state {
+  color: var(--pico-muted-color);
+
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+  }
+}
+
 .task-detail-page,
 .task-detail-state {
   width: 100%;

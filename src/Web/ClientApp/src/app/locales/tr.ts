@@ -7,6 +7,7 @@ export const tr = {
     counter: 'Sayaç',
     weather: 'Hava durumu',
     tasks: 'Görevler',
+    history: 'Oturum geçmişi',
     login: 'Giriş yap',
     register: 'Kayıt ol',
     logout: 'Çıkış yap',
@@ -55,6 +56,17 @@ export const tr = {
     },
   },
   focus: {
+    history: {
+      title: 'Oturum geçmişi',
+      loading: 'Odak oturumları yükleniyor...',
+      loadError: 'Odak oturumu geçmişi yüklenemedi.',
+      retry: 'Tekrar dene',
+      empty: 'Henüz odak oturumu yok.',
+      completed: 'Tamamlandı',
+      incomplete: 'Devam ediyor',
+      duration: '{{count}} dk',
+      reflection: 'Değerlendirme: {{value}}',
+    },
     start: {
       action: 'Odaklanmaya başla',
       starting: 'Başlatılıyor...',

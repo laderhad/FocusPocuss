@@ -8,6 +8,7 @@ import {
   StartFocusSessionRequest,
   type DistractionReportDto,
   type FocusSessionDto,
+  type FocusSessionHistoryItemDto,
 } from '../../../web-api-client';
 
 const focusSessionsClient = new FocusSessionsClient();
@@ -35,6 +36,10 @@ export function getFocusSession(sessionId: number): Promise<FocusSessionDto> {
   return focusSessionsClient.getFocusSession(sessionId);
 }
 
+export function getFocusSessionHistory(): Promise<FocusSessionHistoryItemDto[]> {
+  return focusSessionsClient.getFocusSessionHistory();
+}
+
 export function completeFocusSession(sessionId: number): Promise<FocusSessionDto> {
   return focusSessionsClient.completeFocusSession(sessionId);
 }
@@ -60,4 +65,8 @@ export function reportDistraction(
 }
 
 export { DistractionReason, FocusSessionReflection, InterventionStrategy };
-export type { DistractionReportDto, FocusSessionDto };
+export type {
+  DistractionReportDto,
+  FocusSessionDto,
+  FocusSessionHistoryItemDto,
+};

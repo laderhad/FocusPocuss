@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
 import { TasksPage } from "./pages/TasksPage";
 import { TaskDetailsPage } from "./pages/TaskDetailsPage";
 import { FocusSessionPage } from "./pages/FocusSessionPage";
+import { FocusSessionHistoryPage } from "./pages/FocusSessionHistoryPage";
 
 const AppRoutes = [
   {
@@ -37,6 +38,10 @@ const AppRoutes = [
   {
     path: '/focus/:sessionId',
     element: <ProtectedRoute><FocusSessionPage /></ProtectedRoute>
+  },
+  {
+    path: '/history',
+    element: <ProtectedRoute><FocusSessionHistoryPage /></ProtectedRoute>
   },
   {
     path: '/login',

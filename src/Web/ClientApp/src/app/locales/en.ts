@@ -7,6 +7,7 @@ export const en = {
     counter: 'Counter',
     weather: 'Weather',
     tasks: 'Tasks',
+    history: 'Session history',
     login: 'Log in',
     register: 'Register',
     logout: 'Log out',
@@ -55,6 +56,17 @@ export const en = {
     },
   },
   focus: {
+    history: {
+      title: 'Session history',
+      loading: 'Loading focus sessions...',
+      loadError: 'Focus session history could not be loaded.',
+      retry: 'Try again',
+      empty: 'No focus sessions yet.',
+      completed: 'Completed',
+      incomplete: 'In progress',
+      duration: '{{count}} min',
+      reflection: 'Reflection: {{value}}',
+    },
     start: {
       action: 'Start focus',
       starting: 'Starting...',
