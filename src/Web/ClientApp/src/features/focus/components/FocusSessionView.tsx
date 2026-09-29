@@ -40,7 +40,7 @@ export function FocusSessionView({
 
   if (
     isCompleted &&
-    session.reflection === undefined &&
+    (session.reflection === undefined || session.reflection === null) &&
     skippedReflectionSessionId !== sessionId
   ) {
     return (

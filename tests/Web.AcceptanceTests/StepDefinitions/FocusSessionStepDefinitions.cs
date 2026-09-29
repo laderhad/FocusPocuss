@@ -35,6 +35,8 @@ public sealed class FocusSessionStepDefinitions(
             FulfillSessionAsync(route, completed: false));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/complete", route =>
             FulfillSessionAsync(route, completed: true));
+        await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/reflection", route =>
+            FulfillSessionAsync(route, completed: true, reflected: true));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/distractions", route =>
             route.FulfillAsync(new RouteFulfillOptions
             {
@@ -94,6 +96,18 @@ public sealed class FocusSessionStepDefinitions(
     public Task WhenTheUserCompletesTheFocusSession()
         => focusSessionPage.CompleteAsync();
 
+    [Then("the focus session reflection question is shown")]
+    public Task ThenTheFocusSessionReflectionQuestionIsShown()
+        => focusSessionPage.AssertReflectionPromptAsync();
+
+    [When("the user records that they focused well")]
+    public Task WhenTheUserRecordsThatTheyFocusedWell()
+        => focusSessionPage.RecordFocusedWellReflectionAsync();
+
+    [When("the user skips the focus session reflection")]
+    public Task WhenTheUserSkipsTheFocusSessionReflection()
+        => focusSessionPage.SkipReflectionAsync();
+
     [Then("the focus session is shown as completed")]
     public Task ThenTheFocusSessionIsShownAsCompleted()
         => focusSessionPage.AssertCompletedAsync();
@@ -114,9 +128,14 @@ public sealed class FocusSessionStepDefinitions(
     public Task ThenTheRecoveryGuidanceIsDismissedAndTheFocusSessionRemainsActive()
         => focusSessionPage.AssertRecoveryDismissedAndSessionActiveAsync();
 
-    private static Task FulfillSessionAsync(IRoute route, bool completed)
+    private static Task FulfillSessionAsync(
+        IRoute route,
+        bool completed,
+        bool reflected = false)
     {
         var completedAtUtc = completed ? "\"2026-09-25T08:20:00Z\"" : "null";
+        var reflection = reflected ? "\"FocusedWell\"" : "null";
+        var reflectedAtUtc = reflected ? "\"2026-09-25T08:21:00Z\"" : "null";
 
         return route.FulfillAsync(new RouteFulfillOptions
         {
@@ -130,7 +149,9 @@ public sealed class FocusSessionStepDefinitions(
                   "action": "{{FocusSessionPage.ExpectedNextAction}}",
                   "plannedDurationMinutes": 10,
                   "startedAtUtc": "2020-01-01T08:00:00Z",
-                  "completedAtUtc": {{completedAtUtc}}
+                  "completedAtUtc": {{completedAtUtc}},
+                  "reflection": {{reflection}},
+                  "reflectedAtUtc": {{reflectedAtUtc}}
                 }
                 """
         });

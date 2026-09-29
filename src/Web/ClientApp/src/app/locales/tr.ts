@@ -77,14 +77,14 @@ export const tr = {
       backToTasks: 'Görevlere dön',
     },
     reflection: {
-      title: 'Bu odak oturumu nasıl geçti?',
+      title: 'Nasıl geçti?',
       saving: 'Kaydediliyor...',
-      skip: 'Atla',
+      skip: 'Şimdilik geç',
       error: 'Değerlendirmen kaydedilemedi. Tekrar dene.',
       options: {
         focusedWell: 'İyi odaklandım',
         someDifficulty: 'Biraz zorlandım',
-        significantDifficulty: 'Oldukça zorlandım',
+        significantDifficulty: 'Çok zorlandım',
       },
     },
     distraction: {
