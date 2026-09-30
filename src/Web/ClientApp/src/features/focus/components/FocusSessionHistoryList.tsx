@@ -76,11 +76,11 @@ export function FocusSessionHistoryList({
             className="session-history-item"
           >
             <div className="session-history-item-header">
-              <h2>
+              <h3>
                 {session.taskId === undefined
                   ? session.action
                   : <Link to={`/tasks/${session.taskId}`}>{session.action}</Link>}
-              </h2>
+              </h3>
               <span className="session-history-status">
                 {t(isCompleted
                   ? 'focus.history.completed'

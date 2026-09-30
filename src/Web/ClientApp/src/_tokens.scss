@@ -1,64 +1,125 @@
-// Calm Kinetic: semantic values shared by the existing Pico baseline and features.
+// Calm Kinetic: final Stitch screen values, including their warm surface variants.
+// Keep these independent of layout; the Pico bridge below serves existing controls.
 :root {
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-display: "Outfit", system-ui, sans-serif;
-  --font-numeric: "JetBrains Mono", monospace;
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display: "Newsreader", Georgia, serif;
+  --font-numeric: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-weight-body: 400;
+  --font-weight-heading: 400;
+  --font-weight-control: 500;
+  --text-label-sm: 0.6875rem;
+  --text-label-md: 0.8125rem;
   --text-small: 0.875rem;
   --text-body: 1rem;
+  --text-body-lg: 1.125rem;
   --text-heading-sm: 1.25rem;
-  --text-heading-md: 1.5rem;
-  --text-heading-lg: 2rem;
-  --text-display: clamp(2rem, 4vw, 3rem);
+  --text-heading-md: 1.75rem;
+  --text-heading-lg: 2.5rem;
+  --text-heading-lg-mobile: 1.75rem;
+  --text-display: 3.5rem;
+  --text-display-mobile: 2.25rem;
+  --line-height-body: 1.5;
+  --line-height-small: 1.57143;
+  --line-height-heading: 1.2;
+  --line-height-display: 1.14286;
+  --tracking-heading: -0.02em;
+  --tracking-display: -0.025em;
+  --tracking-label: 0.06em;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-panel: 16px;
+  --radius-button: var(--radius-md);
+  --radius-chip: var(--radius-lg);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
-  --motion-fast: 120ms;
-  --motion-normal: 190ms;
-  --motion-reward: 520ms;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-gutter: var(--space-6);
+  --space-gutter-mobile: var(--space-4);
+  --space-margin: var(--space-12);
+  --space-margin-mobile: var(--space-5);
+  --motion-fast: 150ms;
+  --motion-normal: 200ms;
+  --motion-slow: 300ms;
+  --motion-field: 700ms;
+  --motion-contour: 28s;
+  --motion-contour-secondary: 34s;
+  --motion-easing: ease-in-out;
   --target-size: 44px;
 }
 
 :root,
 [data-theme="light"] {
-  --color-canvas: #f7f7f2;
+  --color-canvas: #f6fbf5;
+  --color-canvas-focus: #f6f4ee;
   --color-surface: #ffffff;
-  --color-surface-muted: #eeeee8;
-  --color-ink: #17181c;
-  --color-muted: #62635f;
-  --color-border: #d9d9d0;
-  --color-control-border: #85867e;
-  --color-brand: #5b4de8;
-  --color-brand-hover: #493bc7;
+  --color-surface-muted: #f0f5f0;
+  --color-surface-high: #e5e9e4;
+  --color-surface-inset: #efece3;
+  --color-surface-selected: #e7e3d8;
+  --color-surface-warm: #faf8f3;
+  --color-ink: #181d1a;
+  --color-ink-warm: #202522;
+  --color-muted: #424846;
+  --color-subtle: #727876;
+  --color-border: #c2c8c5;
+  --color-border-warm: #e6e2d8;
+  --color-control-border: #d8d4c7;
+  --color-brand: #243b36;
+  --color-brand-hover: #1b2d29;
+  --color-brand-strong: #081f1b;
+  --color-brand-container: #1e3430;
   --color-on-brand: #ffffff;
-  --color-momentum: #d9f27c;
-  --color-on-momentum: #17181c;
-  --color-warm-alert: #c96c3b;
-  // The warm accent needs a darker companion for readable small error text.
-  --color-alert-ink: #9b4923;
-  --color-success: #387044;
+  --color-secondary: #40655c;
+  --color-sage: #52776d;
+  --color-secondary-container: #bfe8dc;
+  --color-on-secondary-container: #00201a;
+  --color-accent: #c58e58;
+  --color-accent-soft: #ffdcc0;
+  --color-accent-ink: #683c0e;
+  --color-alert-ink: #ba1a1a;
+  --color-success: #40655c;
 }
 
+// The export has no dark screens. Retain a restrained dark surface hierarchy,
+// using its inverse pine/sage and clay colors for legible foregrounds.
 @mixin dark-colors {
-  --color-canvas: #111216;
-  --color-surface: #191a20;
-  --color-surface-muted: #24252c;
-  --color-ink: #f5f5f2;
-  --color-muted: #b4b5af;
-  --color-border: #383940;
-  --color-control-border: #797a84;
-  --color-brand: #a99eff;
-  --color-brand-hover: #c1b9ff;
-  --color-on-brand: #17181c;
-  --color-warm-alert: #f4b183;
-  --color-alert-ink: #f4b183;
-  --color-success: #a3d6aa;
+  --color-canvas: #181d1a;
+  --color-canvas-focus: #1e2320;
+  --color-surface: #202723;
+  --color-surface-muted: #262e29;
+  --color-surface-high: #2c322e;
+  --color-surface-inset: #232823;
+  --color-surface-selected: #354b47;
+  --color-surface-warm: #292c26;
+  --color-ink: #edf2ed;
+  --color-ink-warm: #f6f4ee;
+  --color-muted: #c2c8c5;
+  --color-subtle: #a5afaa;
+  --color-border: #424846;
+  --color-border-warm: #4a4c43;
+  --color-control-border: #727876;
+  --color-brand: #b3ccc6;
+  --color-brand-hover: #cfe8e2;
+  --color-brand-strong: #cfe8e2;
+  --color-brand-container: #354b47;
+  --color-on-brand: #081f1b;
+  --color-secondary: #a6cfc3;
+  --color-sage: #859d97;
+  --color-secondary-container: #284d44;
+  --color-on-secondary-container: #c2ebdf;
+  --color-accent: #c58e58;
+  --color-accent-soft: #4b2700;
+  --color-accent-ink: #f9b980;
+  --color-alert-ink: #ffb4ab;
+  --color-success: #a6cfc3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -78,10 +139,11 @@
   --pico-font-family-sans-serif: var(--font-body);
   --pico-font-family-monospace: var(--font-numeric);
   --pico-font-size: 100%;
-  --pico-line-height: 1.6;
+  --pico-font-weight: var(--font-weight-body);
+  --pico-line-height: var(--line-height-body);
   --pico-border-radius: var(--radius-sm);
   --pico-spacing: var(--space-4);
-  --pico-transition: var(--motion-normal) ease;
+  --pico-transition: var(--motion-normal) var(--motion-easing);
   --pico-background-color: var(--color-canvas);
   --pico-color: var(--color-ink);
   --pico-muted-color: var(--color-muted);
@@ -96,10 +158,25 @@
   --pico-primary-hover-underline: var(--color-brand-hover);
   --pico-primary-inverse: var(--color-on-brand);
   --pico-primary-focus: color-mix(in srgb, var(--color-brand) 25%, transparent);
-  --pico-secondary: var(--color-muted);
-  --pico-secondary-hover: var(--color-ink);
+  --pico-secondary: var(--color-secondary);
+  --pico-secondary-background: var(--color-secondary);
+  --pico-secondary-border: var(--color-secondary);
+  --pico-secondary-underline: var(--color-secondary);
+  --pico-secondary-hover: var(--color-brand);
+  --pico-secondary-hover-background: var(--color-brand);
+  --pico-secondary-hover-border: var(--color-brand);
+  --pico-secondary-hover-underline: var(--color-brand);
+  --pico-secondary-inverse: var(--color-on-brand);
   --pico-secondary-focus: var(--pico-primary-focus);
   --pico-contrast: var(--color-ink);
+  --pico-contrast-background: var(--color-ink);
+  --pico-contrast-border: var(--color-ink);
+  --pico-contrast-inverse: var(--color-canvas);
+  --pico-contrast-hover: var(--color-brand-strong);
+  --pico-contrast-hover-background: var(--color-brand-strong);
+  --pico-contrast-hover-border: var(--color-brand-strong);
+  --pico-contrast-focus: var(--pico-primary-focus);
+  --pico-text-selection-color: var(--color-secondary-container);
   --pico-h1-color: var(--color-ink);
   --pico-h2-color: var(--color-ink);
   --pico-h3-color: var(--color-ink);
@@ -116,7 +193,7 @@
   --pico-form-element-color: var(--color-ink);
   --pico-form-element-placeholder-color: var(--color-muted);
   --pico-form-element-border-color: var(--color-control-border);
-  --pico-form-element-active-border-color: var(--color-brand);
+  --pico-form-element-active-border-color: var(--color-secondary);
   --pico-form-element-focus-color: var(--pico-primary-focus);
   --pico-form-element-invalid-border-color: var(--color-alert-ink);
   --pico-form-element-invalid-active-border-color: var(--color-alert-ink);
@@ -126,4 +203,13 @@
   --pico-form-element-valid-focus-color: var(--color-success);
   --pico-del-color: var(--color-alert-ink);
   --pico-ins-color: var(--color-success);
+  --pico-switch-background-color: var(--color-control-border);
+  --pico-switch-checked-background-color: var(--color-brand);
+  --pico-switch-color: var(--color-surface);
+  --pico-range-border-color: var(--color-border);
+  --pico-range-active-border-color: var(--color-secondary);
+  --pico-range-thumb-color: var(--color-brand);
+  --pico-range-thumb-active-color: var(--color-brand-hover);
+  --pico-progress-background-color: var(--color-surface-high);
+  --pico-progress-color: var(--color-secondary);
 }

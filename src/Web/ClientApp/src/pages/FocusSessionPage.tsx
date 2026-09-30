@@ -1,6 +1,7 @@
 import { RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
+import { NavMenu } from '../components/NavMenu';
 import {
   FocusSessionView,
   useCompleteFocusSession,
@@ -37,14 +38,17 @@ export function FocusSessionPage() {
   }
 
   return (
-    <div className="focus-session-page">
-      <FocusSessionView
-        sessionId={parsedSessionId}
-        session={sessionQuery.data}
-        isCompleting={completeSession.isPending}
-        completionFailed={completeSession.isError}
-        onComplete={() => completeSession.mutate()}
-      />
+    <div className={sessionQuery.data.completedAtUtc !== undefined ? 'focus-completed-shell' : undefined}>
+      {sessionQuery.data.completedAtUtc !== undefined && <NavMenu />}
+      <div className="focus-session-page">
+        <FocusSessionView
+          sessionId={parsedSessionId}
+          session={sessionQuery.data}
+          isCompleting={completeSession.isPending}
+          completionFailed={completeSession.isError}
+          onComplete={() => completeSession.mutate()}
+        />
+      </div>
     </div>
   );
 }

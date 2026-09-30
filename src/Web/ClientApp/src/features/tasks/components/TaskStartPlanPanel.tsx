@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Clock3, RefreshCw } from 'lucide-react';
+import { Hourglass, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { StartFocusSessionButton } from '../../focus';
 import { useCreateTaskStartPlan } from '../api/taskQueries';
@@ -30,14 +30,20 @@ export function TaskStartPlanPanel({ taskId, existingPlan }: TaskStartPlanPanelP
   if (plan) {
     return (
       <section className="task-start-plan" aria-labelledby="task-start-plan-title">
-        <h2 id="task-start-plan-title">{t('tasks.startPlan.title')}</h2>
+        <div className="task-start-plan-meta">
+          <p className="task-start-plan-label">{t('tasks.startPlan.title')}</p>
+          {plan.suggestedDurationMinutes !== undefined && (
+            <p className="task-start-plan-duration">
+              <Hourglass size={14} aria-hidden="true" />
+              {t('tasks.startPlan.duration', { count: plan.suggestedDurationMinutes })}
+            </p>
+          )}
+        </div>
+        <h2 id="task-start-plan-title" className="task-start-plan-action">
+          {plan.nextAction}
+        </h2>
         <p className="task-start-plan-message">{plan.message}</p>
-        <p className="task-start-plan-action">{plan.nextAction}</p>
         <div className="task-start-plan-footer">
-          <p className="task-start-plan-duration">
-            <Clock3 size={18} aria-hidden="true" />
-            {t('tasks.startPlan.duration', { count: plan.suggestedDurationMinutes })}
-          </p>
           {plan.id !== undefined && (
             <StartFocusSessionButton taskId={taskId} taskStartPlanId={plan.id} />
           )}

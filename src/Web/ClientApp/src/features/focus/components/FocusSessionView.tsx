@@ -1,4 +1,3 @@
-import { Check, Clock3 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -6,6 +5,8 @@ import type { FocusSessionDto } from '../api/focusApi';
 import { useRemainingSeconds } from '../model/useRemainingSeconds';
 import { DistractionReporter } from './DistractionReporter';
 import { FocusSessionReflectionPrompt } from './FocusSessionReflectionPrompt';
+import { FocusArtwork } from './FocusArtwork';
+import { CompletionHeading } from './CompletionHeading';
 
 interface FocusSessionViewProps {
   sessionId: number;
@@ -29,6 +30,7 @@ export function FocusSessionView({
   onComplete,
 }: FocusSessionViewProps) {
   const { t } = useTranslation();
+  const [isTimerVisible, setIsTimerVisible] = useState(true);
   const [skippedReflectionSessionId, setSkippedReflectionSessionId] =
     useState<number>();
   const isCompleted = session.completedAtUtc !== undefined;
@@ -57,10 +59,11 @@ export function FocusSessionView({
 
     return (
       <section className="focus-session-result" aria-labelledby="focus-completed-title">
-        <Check size={32} aria-hidden="true" />
-        <h1 id="focus-completed-title">{t('focus.session.completed')}</h1>
-        <p>{t('focus.session.completedMessage')}</p>
-        <Link to={taskPath}>{t('focus.session.backToTask')}</Link>
+        <CompletionHeading />
+        <div className="focus-result-actions">
+          <Link to={taskPath} role="button">{t('focus.session.backToTask')}</Link>
+          <Link to="/tasks">{t('focus.session.backToTasks')}</Link>
+        </div>
       </section>
     );
   }
@@ -71,13 +74,29 @@ export function FocusSessionView({
       <h1 id="focus-action">{session.action}</h1>
 
       <div className="focus-session-timer">
-        <p>
-          <Clock3 size={18} aria-hidden="true" />
-          {t('focus.session.remaining')}
-        </p>
-        <time dateTime={`PT${remainingSeconds}S`}>
-          {formatRemainingTime(remainingSeconds)}
-        </time>
+        <FocusArtwork variant="focus" />
+        <div className="focus-timer-content">
+          <div id="focus-timer-value" className="focus-timer-value">
+            {isTimerVisible && (
+              <time
+                id="focus-remaining-time"
+                dateTime={`PT${remainingSeconds}S`}
+                aria-label={`${t('focus.session.remaining')}: ${formatRemainingTime(remainingSeconds)}`}
+              >
+                {formatRemainingTime(remainingSeconds)}
+              </time>
+            )}
+          </div>
+          <button
+            type="button"
+            className="focus-timer-toggle"
+            aria-controls="focus-timer-value"
+            aria-expanded={isTimerVisible}
+            onClick={() => setIsTimerVisible(visible => !visible)}
+          >
+            {t(isTimerVisible ? 'focus.session.hideTimer' : 'focus.session.showTimer')}
+          </button>
+        </div>
       </div>
 
       {remainingSeconds === 0 && (
@@ -86,12 +105,12 @@ export function FocusSessionView({
         </p>
       )}
 
-      <DistractionReporter sessionId={sessionId} />
-
-      <button type="button" disabled={isCompleting} onClick={onComplete}>
-        <Check size={18} aria-hidden="true" />
-        {isCompleting ? t('focus.session.completing') : t('focus.session.complete')}
-      </button>
+      <div className="focus-session-actions">
+        <button className="focus-complete-button" type="button" disabled={isCompleting} onClick={onComplete}>
+          {isCompleting ? t('focus.session.completing') : t('focus.session.complete')}
+        </button>
+        <DistractionReporter sessionId={sessionId} />
+      </div>
 
       {completionFailed && (
         <p className="focus-session-error" role="alert">

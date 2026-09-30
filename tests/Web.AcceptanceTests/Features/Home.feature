@@ -19,7 +19,7 @@ Scenario Outline: Theme preferences apply to the canvas and primary action
 
     Examples:
         | system | theme | canvas             | primary            |
-        | dark   | light | rgb(247, 247, 242) | rgb(91, 77, 232)   |
-        | light  | dark  | rgb(17, 18, 22)    | rgb(169, 158, 255) |
-        | light  | auto  | rgb(247, 247, 242) | rgb(91, 77, 232)   |
-        | dark   | auto  | rgb(17, 18, 22)    | rgb(169, 158, 255) |
+        | dark   | light | rgb(246, 251, 245) | rgb(36, 59, 54)   |
+        | light  | dark  | rgb(24, 29, 26)    | rgb(179, 204, 198) |
+        | light  | auto  | rgb(246, 251, 245) | rgb(36, 59, 54)   |
+        | dark   | auto  | rgb(24, 29, 26)    | rgb(179, 204, 198) |

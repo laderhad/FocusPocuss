@@ -2,6 +2,7 @@ import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { TaskStartPlanPanel, useTaskDetails } from '../features/tasks';
+import gatheringLines from '../shared/assets/gathering-lines.svg?raw';
 
 export function TaskDetailsPage() {
   const { t } = useTranslation();
@@ -15,7 +16,12 @@ export function TaskDetailsPage() {
   }
 
   if (taskQuery.isLoading) {
-    return <p className="task-detail-state" aria-live="polite">{t('tasks.detail.loading')}</p>;
+    return (
+      <section className="task-detail-state">
+        <h1>{t('tasks.detail.title')}</h1>
+        <p aria-live="polite">{t('tasks.detail.loading')}</p>
+      </section>
+    );
   }
 
   if (taskQuery.isError || !taskQuery.data) {
@@ -28,16 +34,24 @@ export function TaskDetailsPage() {
   }
 
   return (
-    <section className="task-detail-page">
+    <section className="task-detail-page" aria-labelledby="task-detail-title">
       <Link to="/tasks" className="task-detail-back">
         <ArrowLeft size={18} aria-hidden="true" />
         {t('tasks.detail.back')}
       </Link>
 
       <header className="task-detail-header">
-        <p>{t('tasks.detail.capturedTask')}</p>
-        <h1>{taskQuery.data.originalInput}</h1>
+        <h1 id="task-detail-title">{t('tasks.detail.title')}</h1>
+        <p className="task-detail-context-label">{t('tasks.detail.capturedTask')}</p>
+        <p className="task-detail-original-input">{taskQuery.data.originalInput}</p>
       </header>
+
+      {/* Trusted local SVG; inline colors follow the existing theme tokens. */}
+      <div
+        className="task-preparation-artwork"
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: gatheringLines }}
+      />
 
       <TaskStartPlanPanel
         taskId={parsedTaskId}
@@ -57,6 +71,7 @@ function TaskDetailsError({ message, onRetry }: TaskDetailsErrorProps) {
 
   return (
     <section className="task-detail-state" role="alert">
+      <h1>{t('tasks.detail.title')}</h1>
       <p>{message}</p>
       {onRetry && (
         <button type="button" className="secondary outline" onClick={onRetry}>

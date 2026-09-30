@@ -29,8 +29,11 @@ export function LoginPage() {
   };
 
   return (
-    <article>
-      <h2>{t('auth.login.title')}</h2>
+    <section className="auth-page" aria-labelledby="login-title">
+      <header>
+        <h1 id="login-title">{t('auth.login.title')}</h1>
+        <p>{t('auth.login.description')}</p>
+      </header>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">{t('auth.login.email')}</label>
         <input type="email" id="email" autoComplete="username"
@@ -42,12 +45,12 @@ export function LoginPage() {
           value={password} onChange={handleChange(setPassword)}
           aria-invalid={invalid || undefined}
           aria-describedby={invalid ? 'login-error' : undefined} />
-        {invalid && <small id="login-error">{t('auth.login.invalid')}</small>}
+        {invalid && <small id="login-error" role="alert">{t('auth.login.invalid')}</small>}
         <button type="submit">{t('auth.login.submit')}</button>
-        <p style={{ marginTop: '1rem' }}>
+        <p className="auth-alternative">
           {t('auth.login.noAccount')} <Link to="/register">{t('auth.login.registerLink')}</Link>
         </p>
       </form>
-    </article>
+    </section>
   );
 }

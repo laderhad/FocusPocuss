@@ -19,7 +19,7 @@ public class TaskCapturePage(IPage page) : BasePage(page)
 
     public async Task AssertTaskDetailsAsync(string originalInput)
     {
-        var capturedTask = Page.Locator(".task-detail-header h1");
+        var capturedTask = Page.Locator(".task-detail-original-input");
 
         await Assertions.Expect(capturedTask).ToBeVisibleAsync();
         (await capturedTask.TextContentAsync()).ShouldBe(originalInput);

@@ -1,4 +1,4 @@
-import { RefreshCw } from 'lucide-react';
+import { ArrowRight, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { TaskDto } from '../api/tasksApi';
@@ -33,15 +33,41 @@ export function TaskList({ tasks, isLoading, isError, onRetry }: TaskListProps) 
     return <p className="task-history-state">{t('tasks.history.empty')}</p>;
   }
 
+  // The API already orders tasks newest first. Feature the first without
+  // implying a session status or a next action that the task DTO doesn't carry.
+  const [featuredTask, ...remainingTasks] = tasks;
+
   return (
-    <ol className="task-history-list">
-      {tasks.map((task) => (
-        <li key={task.id} className="task-history-item">
-          {task.id === undefined
-            ? task.originalInput
-            : <Link to={`/tasks/${task.id}`}>{task.originalInput}</Link>}
-        </li>
-      ))}
-    </ol>
+    <div>
+      <div className="task-continuation">
+        <p className="task-continuation-title" id="task-continuation-title">
+          {featuredTask.originalInput}
+        </p>
+        {featuredTask.id !== undefined && (
+          <Link
+            to={`/tasks/${featuredTask.id}`}
+            className="task-continuation-link"
+            aria-describedby="task-continuation-title"
+          >
+            {t('tasks.history.continue')}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        )}
+      </div>
+      {remainingTasks.length > 0 && (
+        <details className="task-history-disclosure">
+          <summary>{t('tasks.history.remaining', { count: remainingTasks.length })}</summary>
+          <ol className="task-history-list">
+            {remainingTasks.map((task) => (
+              <li key={task.id} className="task-history-item">
+                {task.id === undefined
+                  ? task.originalInput
+                  : <Link to={`/tasks/${task.id}`}>{task.originalInput}</Link>}
+              </li>
+            ))}
+          </ol>
+        </details>
+      )}
+    </div>
   );
 }

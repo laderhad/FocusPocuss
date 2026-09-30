@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './api-authorization/AuthContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from './ThemeToggle';
+import { Brand } from '../shared/components/Brand';
 
 function AuthLinks() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ function AuthLinks() {
   return (
     <>
       <li><Link to="/login">{t('navigation.login')}</Link></li>
-      <li><Link to="/register">{t('navigation.register')}</Link></li>
+      <li><Link className="nav-register" to="/register">{t('navigation.register')}</Link></li>
     </>
   );
 }
@@ -30,17 +31,17 @@ export function NavMenu() {
   const { t } = useTranslation();
 
   return (
-    <header>
-      <nav>
-        <ul>
-          <li><Link to="/">FocusPocuss</Link></li>
+    <header className="app-header">
+      <nav aria-label={t('navigation.label')}>
+        <ul className="nav-brand">
+          <li><Link to="/" aria-label={`FocusPocuss — ${t('navigation.home')}`}><Brand /></Link></li>
         </ul>
-        <ul>
-          <li><Link to="/">{t('navigation.home')}</Link></li>
-          <li><Link to="/tasks">{t('navigation.tasks')}</Link></li>
-          <li><Link to="/history">{t('navigation.history')}</Link></li>
+        <ul className="nav-pages">
+          <li><NavLink to="/" end>{t('navigation.home')}</NavLink></li>
+          <li><NavLink to="/tasks">{t('navigation.tasks')}</NavLink></li>
+          <li><NavLink to="/history">{t('navigation.history')}</NavLink></li>
         </ul>
-        <ul>
+        <ul className="nav-controls">
           <AuthLinks />
           <li aria-hidden="true" className="nav-separator"></li>
           <li><LanguageSwitcher /></li>

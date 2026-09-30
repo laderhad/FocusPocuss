@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FocusSessionReflection } from '../api/focusApi';
 import { useRecordFocusSessionReflection } from '../api/focusQueries';
+import { CompletionHeading } from './CompletionHeading';
 
 const reflectionOptions = [
   {
@@ -39,7 +40,8 @@ export function FocusSessionReflectionPrompt({
 
   return (
     <section className="focus-reflection" aria-labelledby="focus-reflection-title">
-      <h1 id="focus-reflection-title">{t('focus.reflection.title')}</h1>
+      <CompletionHeading />
+      <h2 id="focus-reflection-title">{t('focus.reflection.title')}</h2>
 
       <div className="focus-reflection-options">
         {reflectionOptions.map(option => (

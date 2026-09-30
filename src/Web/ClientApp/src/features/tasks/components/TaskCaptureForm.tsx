@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Plus } from 'lucide-react';
+import { ArrowRight, NotebookPen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useCreateTask } from '../api/taskQueries';
@@ -57,34 +57,42 @@ export function TaskCaptureForm() {
 
   return (
     <form className="task-capture-form" onSubmit={handleSubmit} noValidate>
-      <label htmlFor="task-original-input">{t('tasks.capture.label')}</label>
-      <textarea
-        id="task-original-input"
-        name="originalInput"
-        value={originalInput}
-        onChange={(event) => handleInputChange(event.target.value)}
-        placeholder={t('tasks.capture.placeholder')}
-        maxLength={maxOriginalInputLength}
-        rows={4}
-        aria-invalid={errorMessage ? true : undefined}
-        aria-describedby={errorMessage
-          ? 'task-ai-disclosure task-capture-error'
-          : 'task-ai-disclosure'}
-        disabled={createTask.isPending}
-      />
-      <small id="task-ai-disclosure" className="task-ai-disclosure">
-        {t('tasks.capture.aiDisclosure')}
-      </small>
-      <div className="task-capture-footer">
-        <div id="task-capture-error" className="task-capture-error" aria-live="polite">
-          {errorMessage}
+      <label className="task-capture-label" htmlFor="task-original-input">
+        {t('tasks.capture.label')}
+      </label>
+      <div className="task-capture-control">
+        <div className="task-capture-input">
+          <NotebookPen size={20} aria-hidden="true" />
+          <textarea
+            id="task-original-input"
+            name="originalInput"
+            value={originalInput}
+            onChange={(event) => handleInputChange(event.target.value)}
+            placeholder={t('tasks.capture.placeholder')}
+            maxLength={maxOriginalInputLength}
+            rows={1}
+            aria-invalid={errorMessage ? true : undefined}
+            aria-describedby={errorMessage
+              ? 'task-capture-hint task-ai-disclosure task-capture-error'
+              : 'task-capture-hint task-ai-disclosure'}
+            disabled={createTask.isPending}
+          />
         </div>
         <button type="submit" disabled={createTask.isPending}>
-          <Plus size={18} aria-hidden="true" />
           {createTask.isPending
             ? t('tasks.capture.submitting')
             : t('tasks.capture.submit')}
+          <ArrowRight size={18} aria-hidden="true" />
         </button>
+      </div>
+      <small id="task-capture-hint" className="task-capture-hint">
+        {t('tasks.subtitle')}
+      </small>
+      <small id="task-ai-disclosure" className="task-ai-disclosure">
+        {t('tasks.capture.aiDisclosure')}
+      </small>
+      <div id="task-capture-error" className="task-capture-error" aria-live="polite">
+        {errorMessage}
       </div>
     </form>
   );

@@ -29,14 +29,21 @@ public sealed class FocusSessionStepDefinitions(
                     }
                     """
             }));
+        var activeTaskId = 1;
+        var activePlanId = 501;
         await page.RouteAsync("**/api/focus-sessions/active", route =>
-            FulfillSessionAsync(route, completed: false));
+        {
+            using var request = System.Text.Json.JsonDocument.Parse(route.Request.PostData!);
+            activeTaskId = request.RootElement.GetProperty("taskId").GetInt32();
+            activePlanId = request.RootElement.GetProperty("taskStartPlanId").GetInt32();
+            return FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId);
+        });
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}", route =>
-            FulfillSessionAsync(route, completed: false));
+            FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/complete", route =>
-            FulfillSessionAsync(route, completed: true));
+            FulfillSessionAsync(route, completed: true, taskId: activeTaskId, taskStartPlanId: activePlanId));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/reflection", route =>
-            FulfillSessionAsync(route, completed: true, reflected: true));
+            FulfillSessionAsync(route, completed: true, reflected: true, taskId: activeTaskId, taskStartPlanId: activePlanId));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/distractions", route =>
             route.FulfillAsync(new RouteFulfillOptions
             {
@@ -116,6 +123,10 @@ public sealed class FocusSessionStepDefinitions(
     public Task WhenTheUserReportsAnUnclearNextActionDistraction()
         => focusSessionPage.ReportUnclearNextActionDistractionAsync();
 
+    [When("the user reports tiredness and the server selects clarification")]
+    public Task WhenTheUserReportsTirednessAndTheServerSelectsClarification()
+        => focusSessionPage.ReportTirednessWithServerClarificationAsync();
+
     [Then("the selected recovery guidance is shown")]
     public Task ThenTheSelectedRecoveryGuidanceIsShown()
         => focusSessionPage.AssertRecoveryGuidanceAsync();
@@ -128,10 +139,16 @@ public sealed class FocusSessionStepDefinitions(
     public Task ThenTheRecoveryGuidanceIsDismissedAndTheFocusSessionRemainsActive()
         => focusSessionPage.AssertRecoveryDismissedAndSessionActiveAsync();
 
+    [Then("starting with an open session for a different {string} requires explicit navigation")]
+    public Task ThenStartingWithAnOpenSessionRequiresExplicitNavigation(string scope)
+        => focusSessionPage.AssertExistingSessionRequiresExplicitNavigationAsync(scope);
+
     private static Task FulfillSessionAsync(
         IRoute route,
         bool completed,
-        bool reflected = false)
+        bool reflected = false,
+        int taskId = 1,
+        int taskStartPlanId = 501)
     {
         var completedAtUtc = completed ? "\"2026-09-25T08:20:00Z\"" : "null";
         var reflection = reflected ? "\"FocusedWell\"" : "null";
@@ -144,8 +161,8 @@ public sealed class FocusSessionStepDefinitions(
             Body = $$"""
                 {
                   "id": {{FocusSessionPage.SessionId}},
-                  "taskId": 1,
-                  "taskStartPlanId": 501,
+                  "taskId": {{taskId}},
+                  "taskStartPlanId": {{taskStartPlanId}},
                   "action": "{{FocusSessionPage.ExpectedNextAction}}",
                   "plannedDurationMinutes": 10,
                   "startedAtUtc": "2020-01-01T08:00:00Z",

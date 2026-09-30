@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 460 460">
+<style>
+  @keyframes focuspocussContourDrift {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.018) rotate(0.8deg); }
+  }
+  .focuspocuss-contour-flow-1 {
+    animation: focuspocussContourDrift var(--motion-contour, 28s) ease-in-out infinite;
+    transform-origin: 230px 230px;
+  }
+  .focuspocuss-contour-flow-2 {
+    animation: focuspocussContourDrift var(--motion-contour-secondary, 34s) ease-in-out infinite reverse;
+    transform-origin: 230px 230px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .focuspocuss-contour-flow-1, .focuspocuss-contour-flow-2 { animation: none; }
+  }
+</style>
+<path class="focuspocuss-contour-flow-1" d="M 230,52 C 322,50 408,124 410,226 C 412,328 338,406 234,410 C 138,414 48,336 50,234 C 52,136 138,54 230,52 Z" stroke="var(--color-sage, #52776D)" stroke-dasharray="4 6 2 6" stroke-width="1.2" opacity="0.55">
+</path>
+<path class="focuspocuss-contour-flow-2" d="M 232,96 C 304,94 368,154 366,236 C 364,314 310,368 230,364 C 154,360 90,306 94,228 C 98,150 160,98 232,96 Z" stroke="var(--color-brand, #243B36)" stroke-width="1.5" opacity="0.75">
+</path>
+<path class="focuspocuss-contour-flow-1" d="M 228,142 C 282,140 324,180 322,234 C 320,288 280,324 226,322 C 172,320 136,280 138,228 C 140,176 174,144 228,142 Z" stroke="var(--color-sage, #52776D)" stroke-dasharray="1 3" stroke-width="1.2" opacity="0.6">
+</path>
+<path d="M 386,110 C 412,142 426,182 428,218" stroke="var(--color-sage, #52776D)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 5" opacity="0.45">
+</path>
+<path d="M 62,270 C 58,308 72,346 98,378" stroke="var(--color-sage, #52776D)" stroke-width="1.2" stroke-linecap="round" opacity="0.45">
+</path>
+<circle cx="372" cy="346" r="2" fill="var(--color-accent, #C58E58)" opacity="0.8">
+</circle>
+<circle cx="116" cy="118" r="1.8" fill="var(--color-sage, #52776D)" opacity="0.75">
+</circle>
+<circle cx="230" cy="52" r="1.5" fill="var(--color-brand, #243B36)" opacity="0.6">
+</circle>
+</svg>

@@ -58,9 +58,12 @@ export function RegisterPage() {
   };
 
   return (
-    <article>
-      <h2>{t('auth.register.title')}</h2>
-      {error && <p className="error">{error}</p>}
+    <section className="auth-page" aria-labelledby="register-title">
+      <header>
+        <h1 id="register-title">{t('auth.register.title')}</h1>
+        <p>{t('auth.register.description')}</p>
+      </header>
+      {error && <p className="error" role="alert">{error}</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">{t('auth.register.email')}</label>
         <input type="email" id="email" autoComplete="username"
@@ -85,10 +88,10 @@ export function RegisterPage() {
             : ''}
         </small>
         <button type="submit">{t('auth.register.submit')}</button>
-        <p style={{ marginTop: '1rem' }}>
+        <p className="auth-alternative">
           {t('auth.register.hasAccount')} <Link to="/login">{t('auth.register.loginLink')}</Link>
         </p>
       </form>
-    </article>
+    </section>
   );
 }

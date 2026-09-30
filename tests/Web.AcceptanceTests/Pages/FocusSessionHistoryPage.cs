@@ -12,17 +12,17 @@ public sealed class FocusSessionHistoryPage(IPage page) : BasePage(page)
     public async Task AssertSessionsNewestFirstAsync()
     {
         await Assertions.Expect(Page.Locator("#session-history-title"))
-            .ToHaveTextAsync("Session history");
+            .ToHaveTextAsync("How do I work more easily?");
 
         var sessions = Page.Locator(".session-history-item");
         await Assertions.Expect(sessions).ToHaveCountAsync(2);
 
-        await Assertions.Expect(sessions.Nth(0).Locator("h2"))
+        await Assertions.Expect(sessions.Nth(0).Locator("h3"))
             .ToHaveTextAsync(NewestAction);
         await Assertions.Expect(sessions.Nth(0).Locator(".session-history-status"))
             .ToHaveTextAsync("In progress");
 
-        await Assertions.Expect(sessions.Nth(1).Locator("h2"))
+        await Assertions.Expect(sessions.Nth(1).Locator("h3"))
             .ToHaveTextAsync(OlderAction);
         await Assertions.Expect(sessions.Nth(1).Locator(".session-history-status"))
             .ToHaveTextAsync("Completed");

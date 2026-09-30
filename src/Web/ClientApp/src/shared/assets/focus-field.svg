@@ -1,0 +1,12 @@
+<svg fill="none" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+<path d="M 160 26 C 224 24, 280 62, 294 128 C 307 186, 276 254, 212 284 C 156 310, 88 295, 44 248 C 0 200, 16 118, 68 64 C 94 37, 126 27, 160 26 Z" stroke="var(--color-sage, #52776D)" stroke-width="1.1" stroke-dasharray="3 5" opacity="0.4">
+</path>
+<path d="M 163 56 C 214 50, 260 88, 265 146 C 270 204, 233 255, 172 259 C 115 263, 64 228, 58 168 C 52 112, 95 64, 163 56 Z" stroke="var(--color-sage, #52776D)" stroke-width="1.3" opacity="0.75">
+</path>
+<path d="M 161 92 C 198 88, 228 116, 226 158 C 224 198, 195 223, 158 221 C 122 219, 98 194, 102 156 C 106 120, 128 94, 161 92 Z" stroke="var(--color-brand, #243B36)" stroke-width="1" opacity="0.35">
+</path>
+<circle cx="278" cy="118" r="1" fill="var(--color-sage, #52776D)" opacity="0.4">
+</circle>
+<circle cx="52" cy="220" r="1.2" fill="var(--color-brand, #243B36)" opacity="0.35">
+</circle>
+</svg>
