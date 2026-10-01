@@ -5,6 +5,7 @@ namespace FocusPocuss.Web.AcceptanceTests.Pages;
 public class FocusSessionPage(IPage page) : BasePage(page)
 {
     public const int SessionId = 73;
+    public const string ExpectedRecoveredAction = "Write the first review note.";
     public const string ExpectedNextAction = "Open the project and write the first review note.";
 
     public override string PagePath => $"{BaseUrl}/focus/{SessionId}";
@@ -98,7 +99,7 @@ public class FocusSessionPage(IPage page) : BasePage(page)
             () => Page.Locator(".focus-distraction-form button[type='submit']").ClickAsync(),
             request => request.Method == "POST"
                 && request.Url.EndsWith($"/api/focus-sessions/{SessionId}/distractions"));
-        request.PostData.ShouldBe("{\"reason\":\"UnclearNextAction\"}");
+        request.PostData.ShouldBe("{\"reason\":\"UnclearNextAction\",\"language\":\"en\"}");
     }
 
     public async Task ReportTirednessWithServerClarificationAsync()
@@ -110,7 +111,16 @@ public class FocusSessionPage(IPage page) : BasePage(page)
         {
             Status = 200,
             ContentType = "application/json",
-            Body = $$"""{"id":902,"focusSessionId":{{SessionId}},"reason":"Tired","strategy":"ClarifyNextAction"}"""
+            Body = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                id = 902, focusSessionId = SessionId, reason = "Tired", strategy = "ClarifyNextAction",
+                intervention = new
+                {
+                    type = "ClarifyCurrentAction", version = "distraction-recovery-v1",
+                    currentAction = ExpectedNextAction, returnAction = ExpectedRecoveredAction,
+                    requirement = "None", choices = Array.Empty<string>()
+                }
+            })
         });
         await Page.RouteAsync(url, handler);
         try
@@ -120,7 +130,7 @@ public class FocusSessionPage(IPage page) : BasePage(page)
             var request = await Page.RunAndWaitForRequestAsync(
                 () => Page.Locator(".focus-distraction-form button[type='submit']").ClickAsync(),
                 request => request.Method == "POST" && request.Url.EndsWith($"/api/focus-sessions/{SessionId}/distractions"));
-            request.PostData.ShouldBe("{\"reason\":\"Tired\"}");
+            request.PostData.ShouldBe("{\"reason\":\"Tired\",\"language\":\"en\"}");
             await AssertRecoveryGuidanceAsync();
         }
         finally
@@ -134,9 +144,9 @@ public class FocusSessionPage(IPage page) : BasePage(page)
         await Assertions.Expect(Page.Locator(".focus-distraction-success"))
             .ToBeVisibleAsync();
         await Assertions.Expect(Page.Locator(".focus-distraction-success-title"))
-            .ToHaveTextAsync("Try this now");
+            .ToHaveTextAsync("Remove the uncertainty first.");
         await Assertions.Expect(Page.Locator(".focus-distraction-message"))
-            .ToHaveTextAsync("Name the next physical action, then do only that.");
+            .ToHaveTextAsync("The action you will work on when you return:");
         await Assertions.Expect(Page.Locator(".focus-distraction-return"))
             .ToHaveTextAsync("Return to focus");
     }
@@ -153,7 +163,7 @@ public class FocusSessionPage(IPage page) : BasePage(page)
         await Assertions.Expect(Page.Locator(".focus-distraction-trigger"))
             .ToBeFocusedAsync();
         await Assertions.Expect(Page.Locator("#focus-action"))
-            .ToHaveTextAsync(ExpectedNextAction);
+            .ToHaveTextAsync(ExpectedRecoveredAction);
         await Assertions.Expect(Page.Locator(".focus-session button:has-text('This step is done')"))
             .ToBeVisibleAsync();
     }
@@ -202,6 +212,105 @@ public class FocusSessionPage(IPage page) : BasePage(page)
             await Page.UnrouteAsync(startUrl, startHandler);
             await Page.UnrouteAsync(detailUrl, detailHandler);
         }
+    }
+
+    public async Task ClarifyOnMobileAfterReloadAsync()
+    {
+        var requirement = "NeedsClarification";
+        object Report() => new
+        {
+            id = 903, focusSessionId = SessionId, reason = "UnclearNextAction", strategy = "ClarifyNextAction",
+            clarificationUsed = requirement == "None",
+            intervention = new
+            {
+                type = "ClarifyCurrentAction", version = "distraction-recovery-v1", currentAction = ExpectedNextAction,
+                returnAction = requirement == "None" ? ExpectedRecoveredAction : null,
+                requirement, choices = Array.Empty<string>()
+            }
+        };
+        var reportUrl = $"**/api/focus-sessions/{SessionId}/distractions";
+        var detailUrl = $"**/api/focus-sessions/{SessionId}";
+        var prepareUrl = $"**/api/focus-sessions/{SessionId}/distractions/903/prepare";
+        Func<IRoute, Task> reportHandler = route => route.FulfillAsync(new()
+        {
+            Status = 200, ContentType = "application/json", Body = System.Text.Json.JsonSerializer.Serialize(Report())
+        });
+        Func<IRoute, Task> detailHandler = route => route.FulfillAsync(new()
+        {
+            Status = 200, ContentType = "application/json", Body = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                id = SessionId, taskId = 1, taskStartPlanId = 501, action = ExpectedNextAction,
+                plannedDurationMinutes = 10, startedAtUtc = "2026-10-01T08:00:00Z", pendingRecovery = Report()
+            })
+        });
+        Func<IRoute, Task> prepareHandler = route =>
+        {
+            using var request = System.Text.Json.JsonDocument.Parse(route.Request.PostData!);
+            request.RootElement.GetProperty("clarification").GetString().ShouldBe("The first review note is about the visible login error.");
+            requirement = "None";
+            return reportHandler(route);
+        };
+        await Page.RouteAsync(reportUrl, reportHandler);
+        await Page.RouteAsync(detailUrl, detailHandler);
+        await Page.RouteAsync(prepareUrl, prepareHandler);
+        try
+        {
+            await Page.SetViewportSizeAsync(390, 844);
+            await ReportUnclearNextActionDistractionAsync();
+            await Assertions.Expect(Page.Locator("#recovery-input")).ToBeVisibleAsync();
+            await Page.ReloadAsync();
+            await Assertions.Expect(Page.Locator("#recovery-input")).ToBeVisibleAsync();
+            await Page.GetByLabel("Where are you stuck? Write a short detail.")
+                .FillAsync("The first review note is about the visible login error.");
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Clarify the action", Exact = true }).ClickAsync();
+            await Assertions.Expect(Page.Locator(".focus-recovery-action p")).ToHaveTextAsync(ExpectedRecoveredAction);
+            await Assertions.Expect(Page.Locator("#recovery-input")).ToHaveCountAsync(0);
+            (await Page.EvaluateAsync<bool>("document.documentElement.scrollWidth <= window.innerWidth")).ShouldBeTrue();
+            var artifacts = Environment.GetEnvironmentVariable("PLAYWRIGHT_ARTIFACTS_DIR");
+            if (!string.IsNullOrWhiteSpace(artifacts))
+                await Page.ScreenshotAsync(new() { Path = Path.Combine(artifacts, "recovery-mobile.png"), FullPage = true });
+        }
+        finally
+        {
+            await Page.UnrouteAsync(reportUrl, reportHandler);
+            await Page.UnrouteAsync(detailUrl, detailHandler);
+            await Page.UnrouteAsync(prepareUrl, prepareHandler);
+            await Page.SetViewportSizeAsync(1280, 720);
+        }
+    }
+
+    public async Task ParkThoughtAsync()
+    {
+        await Page.Locator(".focus-distraction-trigger").ClickAsync();
+        await Page.GetByLabel("Another thought pulled me away", new() { Exact = true }).CheckAsync();
+        await Page.Locator(".focus-distraction-form button[type='submit']").ClickAsync();
+        await Page.GetByLabel("The thought you want to remember later").FillAsync("Call Deniz tomorrow.");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Save and return", Exact = true }).ClickAsync();
+        await Assertions.Expect(Page.Locator(".focus-recovery-dialog")).Not.ToBeVisibleAsync();
+    }
+
+    public async Task AssertParkedThoughtAfterReloadAsync()
+    {
+        await Page.ReloadAsync();
+        await Assertions.Expect(Page.Locator("#focus-action")).ToHaveTextAsync(ExpectedNextAction);
+        await Page.Locator(".focus-parked-thoughts summary").ClickAsync();
+        await Assertions.Expect(Page.Locator(".focus-parked-thoughts li")).ToHaveTextAsync("Call Deniz tomorrow.");
+    }
+
+    public async Task EndEarlyAsync()
+    {
+        await Page.Locator(".focus-distraction-trigger").ClickAsync();
+        await Page.GetByLabel("I'm tired", new() { Exact = true }).CheckAsync();
+        await Page.Locator(".focus-distraction-form button[type='submit']").ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "End the session here", Exact = true }).ClickAsync();
+    }
+
+    public async Task AssertEndedEarlyAsync()
+    {
+        await Assertions.Expect(Page.Locator("#focus-completed-title")).ToHaveTextAsync("The session ended here.");
+        await Assertions.Expect(Page.Locator(".focus-reflection")).ToHaveCountAsync(0);
+        await Page.ReloadAsync();
+        await Assertions.Expect(Page.Locator("#focus-completed-title")).ToHaveTextAsync("The session ended here.");
     }
 
     private async Task<int> GetReflectionRequestCountAsync()

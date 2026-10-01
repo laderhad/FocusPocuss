@@ -95,18 +95,39 @@ public class CreateTaskStartPlanTests : TestBase
         (await TestApp.CountAsync<TaskStartPlan>()).ShouldBe(1);
     }
 
-    [Test]
-    public async Task ShouldNotPersistInvalidPlannerResult()
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(4)]
+    [TestCase(31)]
+    [TestCase(60)]
+    public async Task ShouldNotPersistInvalidPlannerResult(int duration)
     {
         await TestApp.RunAsDefaultUserAsync();
         var task = await CreateTaskAsync("Prepare the release notes");
         var planner = TestApp.GetTaskStartPlanner();
-        planner.Result = planner.Result with { SuggestedDurationMinutes = 0 };
+        planner.Result = planner.Result with { SuggestedDurationMinutes = duration };
 
         await Should.ThrowAsync<InvalidOperationException>(
             () => TestApp.SendAsync(new CreateTaskStartPlanCommand(task.Id, "en")));
 
         (await TestApp.CountAsync<TaskStartPlan>()).ShouldBe(0);
+    }
+
+    [TestCase(5)]
+    [TestCase(30)]
+    public async Task ShouldPersistDurationAtAcceptedBoundary(int duration)
+    {
+        await TestApp.RunAsDefaultUserAsync();
+        var task = await CreateTaskAsync("Write the release summary");
+        var planner = TestApp.GetTaskStartPlanner();
+        planner.Result = planner.Result with { SuggestedDurationMinutes = duration };
+
+        var result = await TestApp.SendAsync(new CreateTaskStartPlanCommand(task.Id, "en"));
+
+        result.SuggestedDurationMinutes.ShouldBe(duration);
+        var entity = await TestApp.FindAsync<TaskStartPlan>(result.Id);
+        entity.ShouldNotBeNull();
+        entity.SuggestedDurationMinutes.ShouldBe(duration);
     }
 
     [Test]

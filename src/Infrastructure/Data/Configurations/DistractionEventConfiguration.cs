@@ -8,6 +8,15 @@ public class DistractionEventConfiguration : IEntityTypeConfiguration<Distractio
 {
     public void Configure(EntityTypeBuilder<DistractionEvent> builder)
     {
+        builder.Property(x => x.StrategyVersion).HasMaxLength(50);
+        builder.Property(x => x.ActionAtDistraction).HasMaxLength(500);
+        builder.Property(x => x.ProposedAction).HasMaxLength(500);
+        builder.Property(x => x.Language).HasMaxLength(2);
+        builder.Property(x => x.ParkedThought).HasMaxLength(1000);
+        builder.HasIndex(x => x.FocusSessionId).IsUnique()
+            .HasFilter("\"InterventionType\" IS NOT NULL AND \"ResolvedAtUtc\" IS NULL")
+            .HasDatabaseName("IX_DistractionEvents_PendingRecovery");
+
         builder.Property(distraction => distraction.Reason)
             .IsRequired();
 

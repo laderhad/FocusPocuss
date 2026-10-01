@@ -1,4 +1,5 @@
-﻿using FocusPocuss.Application.Common.Interfaces;
+﻿using FocusPocuss.Application.Behavior.Interventions;
+using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Tasks.Planning;
 using FocusPocuss.Infrastructure.AI;
 using FocusPocuss.Infrastructure.Data;
@@ -70,5 +71,8 @@ public static class DependencyInjection
         });
 
         builder.Services.AddSingleton<ITaskStartPlanner, OpenAiTaskStartPlanner>();
+        builder.Services.AddSingleton<IRecoveryActionPlanner>(provider => new OpenAiRecoveryActionPlanner(
+            () => provider.GetRequiredService<IChatClient>(),
+            provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<OpenAiRecoveryActionPlanner>>()));
     }
 }

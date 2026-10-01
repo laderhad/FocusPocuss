@@ -30,18 +30,59 @@ namespace FocusPocuss.Infrastructure.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ActionAtDistraction")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int?>("Choice")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("ClarificationUsed")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("FocusSessionId")
                         .HasColumnType("integer");
+
+                    b.Property<int?>("InterventionType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Language")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
 
                     b.Property<DateTimeOffset>("OccurredAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ParkedThought")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("ProposedAction")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<int>("Reason")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("Requirement")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Resolution")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("ResolvedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("StrategyVersion")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("FocusSessionId");
+                    b.HasIndex("FocusSessionId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_DistractionEvents_PendingRecovery")
+                        .HasFilter("\"InterventionType\" IS NOT NULL AND \"ResolvedAtUtc\" IS NULL");
 
                     b.ToTable("DistractionEvents", t =>
                         {
@@ -71,6 +112,9 @@ namespace FocusPocuss.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset?>("EndedEarlyAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
@@ -78,6 +122,14 @@ namespace FocusPocuss.Infrastructure.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("PlannedDurationMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecoveryAction")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("RecoveryRevision")
+                        .IsConcurrencyToken()
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("ReflectedAtUtc")
@@ -109,7 +161,7 @@ namespace FocusPocuss.Infrastructure.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique()
                         .HasDatabaseName("IX_FocusSessions_UserId_Active")
-                        .HasFilter("\"CompletedAtUtc\" IS NULL");
+                        .HasFilter("\"CompletedAtUtc\" IS NULL AND \"EndedEarlyAtUtc\" IS NULL");
 
                     b.ToTable("FocusSessions", t =>
                         {

@@ -31,6 +31,7 @@ public class RecordFocusSessionReflectionCommandHandler
         CancellationToken cancellationToken)
     {
         var session = await _context.FocusSessions
+            .Include(session => session.DistractionEvents)
             .SingleOrDefaultAsync(
                 item => item.Id == request.FocusSessionId
                     && item.UserId == _user.Id

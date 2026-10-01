@@ -1,3 +1,5 @@
+using FocusPocuss.Application.FocusSessions.Commands.PrepareRecovery;
+using FocusPocuss.Application.FocusSessions.Commands.ResolveRecovery;
 using FocusPocuss.Application.FocusSessions;
 using FocusPocuss.Application.FocusSessions.Commands.CompleteFocusSession;
 using FocusPocuss.Application.FocusSessions.Commands.RecordFocusSessionReflection;
@@ -22,6 +24,8 @@ public class FocusSessions : IEndpointGroup
         groupBuilder.MapGet(GetFocusSessionHistory, "history");
         groupBuilder.MapGet(GetFocusSession, "{id:int}");
         groupBuilder.MapPost(ReportDistraction, "{id:int}/distractions");
+        groupBuilder.MapPut(PrepareRecovery, "{id:int}/distractions/{distractionId:int}/prepare");
+        groupBuilder.MapPut(ResolveRecovery, "{id:int}/distractions/{distractionId:int}/resolve");
         groupBuilder.MapPut(CompleteFocusSession, "{id:int}/complete");
         groupBuilder.MapPut(RecordFocusSessionReflection, "{id:int}/reflection");
     }
@@ -74,11 +78,21 @@ public class FocusSessions : IEndpointGroup
         CancellationToken cancellationToken)
     {
         var distractionEvent = await sender.Send(
-            new ReportDistractionCommand(id, request.Reason),
+            new ReportDistractionCommand(id, request.Reason, request.Language),
             cancellationToken);
 
         return TypedResults.Ok(distractionEvent);
     }
+
+    public static async Task<Ok<DistractionReportDto>> PrepareRecovery(
+        ISender sender, int id, int distractionId, PrepareRecoveryRequest request, CancellationToken cancellationToken)
+        => TypedResults.Ok(await sender.Send(new PrepareRecoveryCommand(id, distractionId,
+            request.Choice, request.Clarification), cancellationToken));
+
+    public static async Task<Ok<FocusSessionDto>> ResolveRecovery(
+        ISender sender, int id, int distractionId, ResolveRecoveryRequest request, CancellationToken cancellationToken)
+        => TypedResults.Ok(await sender.Send(new ResolveRecoveryCommand(id, distractionId,
+            request.Resolution, request.Thought), cancellationToken));
 
     [EndpointSummary("Complete a focus session")]
     [EndpointDescription("Explicitly completes an owned focus session and returns its persisted state.")]
@@ -112,6 +126,10 @@ public class FocusSessions : IEndpointGroup
 
 public sealed record StartFocusSessionRequest(int TaskId, int TaskStartPlanId);
 
-public sealed record ReportDistractionRequest(DistractionReason Reason);
+public sealed record ReportDistractionRequest(DistractionReason Reason, string Language = "en");
+
+public sealed record PrepareRecoveryRequest(RecoveryChoice? Choice, string? Clarification);
+
+public sealed record ResolveRecoveryRequest(RecoveryResolution Resolution, string? Thought);
 
 public sealed record RecordFocusSessionReflectionRequest(FocusSessionReflection Reflection);

@@ -1,9 +1,10 @@
-import { ArrowRight, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DistractionReason, InterventionStrategy } from '../api/focusApi';
-import { useReportDistraction } from '../api/focusQueries';
+import { DistractionReason, RecoveryResolution, PrepareRecoveryRequest, ResolveRecoveryRequest, type DistractionReportDto, type RecoveryChoice } from '../api/focusApi';
+import { usePrepareRecovery, useResolveRecovery, useReportDistraction } from '../api/focusQueries';
 import { FocusArtwork } from './FocusArtwork';
+import { RecoveryInterventionView } from './RecoveryInterventionView';
 
 const reasonOptions = [
   {
@@ -32,33 +33,22 @@ const reasonOptions = [
   },
 ] as const;
 
-const interventionMessageKeys: Record<InterventionStrategy, string> = {
-  [InterventionStrategy.TaskDecomposition]:
-    'focus.distraction.interventions.taskDecomposition',
-  [InterventionStrategy.ClarifyNextAction]:
-    'focus.distraction.interventions.clarifyNextAction',
-  [InterventionStrategy.RemoveFriction]:
-    'focus.distraction.interventions.removeFriction',
-  [InterventionStrategy.DistractionRecovery]:
-    'focus.distraction.interventions.distractionRecovery',
-  [InterventionStrategy.BreakRecommendation]:
-    'focus.distraction.interventions.breakRecommendation',
-};
-
 interface DistractionReporterProps {
   sessionId: number;
+  recovery?: DistractionReportDto;
 }
 
-export function DistractionReporter({ sessionId }: DistractionReporterProps) {
-  const { t } = useTranslation();
+export function DistractionReporter({ sessionId, recovery }: DistractionReporterProps) {
+  const { t, i18n } = useTranslation();
   const reportDistraction = useReportDistraction(sessionId);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState<DistractionReason>();
-  const [isAcknowledged, setIsAcknowledged] = useState(false);
-  const [selectedStrategy, setSelectedStrategy] = useState<InterventionStrategy>();
+  const prepare = usePrepareRecovery(sessionId);
+  const resolve = useResolveRecovery(sessionId);
+  const busy = reportDistraction.isPending || prepare.isPending || resolve.isPending;
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const guidanceRef = useRef<HTMLParagraphElement>(null);
-  const isRecovering = isOpen || isAcknowledged;
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const isRecovering = isOpen || !!recovery;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -68,13 +58,13 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
   }, [isRecovering]);
 
   useEffect(() => {
-    if (isAcknowledged) guidanceRef.current?.focus();
-  }, [isAcknowledged]);
+    if (recovery) headingRef.current?.focus();
+  }, [recovery]);
 
   const open = () => {
     reportDistraction.reset();
-    setIsAcknowledged(false);
-    setSelectedStrategy(undefined);
+    prepare.reset();
+    resolve.reset();
     setIsOpen(true);
   };
 
@@ -91,20 +81,22 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
       return;
     }
 
-    reportDistraction.mutate(selectedReason, {
-      onSuccess: report => {
+    reportDistraction.mutate({ reason: selectedReason, language: i18n.resolvedLanguage?.startsWith('tr') ? 'tr' : 'en' }, {
+      onSuccess: () => {
         setSelectedReason(undefined);
-        setSelectedStrategy(report.strategy);
         setIsOpen(false);
-        setIsAcknowledged(true);
       },
     });
   };
 
-  const returnToFocus = () => {
-    reportDistraction.reset();
-    setSelectedStrategy(undefined);
-    setIsAcknowledged(false);
+  const onResolve = (resolution: RecoveryResolution, thought?: string) => {
+    if (recovery?.id === undefined) return;
+    resolve.mutate({ id: recovery.id, request: new ResolveRecoveryRequest({ resolution, thought }) },
+      { onSuccess: () => setIsOpen(false) });
+  };
+  const onPrepare = (choice?: RecoveryChoice, clarification?: string) => {
+    if (recovery?.id === undefined) return;
+    prepare.mutate({ id: recovery.id, request: new PrepareRecoveryRequest({ choice, clarification }) });
   };
 
   return (
@@ -123,17 +115,17 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
         aria-labelledby="focus-recovery-title"
         onCancel={event => {
           event.preventDefault();
-          if (!reportDistraction.isPending) {
-            if (isAcknowledged) returnToFocus();
+          if (!busy) {
+            if (recovery) onResolve(RecoveryResolution.Dismiss);
             else cancel();
           }
         }}
       >
         <div className="focus-recovery-content">
           <FocusArtwork variant="recovery" />
-          <h1 id="focus-recovery-title">{t('focus.distraction.heading')}</h1>
+          <h1 id="focus-recovery-title" ref={headingRef} tabIndex={-1}>{t('focus.distraction.heading')}</h1>
 
-          {isOpen && (
+          {isOpen && !recovery && (
             <form className="focus-distraction-form" onSubmit={submit}>
               <fieldset disabled={reportDistraction.isPending}>
                 <legend>{t('focus.distraction.title')}</legend>
@@ -190,28 +182,12 @@ export function DistractionReporter({ sessionId }: DistractionReporterProps) {
             </form>
           )}
 
-          {isAcknowledged && (
-            <div className="focus-distraction-success" role="status">
-              <p className="focus-distraction-success-title">
-                {t('focus.distraction.recoveryTitle')}
-              </p>
-              <p className="focus-distraction-message" tabIndex={-1} ref={guidanceRef}>
-                {t(
-                  selectedStrategy === undefined
-                    ? 'focus.distraction.success'
-                    : interventionMessageKeys[selectedStrategy],
-                )}
-              </p>
-              <button
-                type="button"
-                className="focus-distraction-return"
-                onClick={returnToFocus}
-              >
-                {t('focus.distraction.returnToFocus')}
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
-            </div>
+          {recovery && (
+            <RecoveryInterventionView key={`${recovery.id}-${recovery.intervention?.requirement}`} report={recovery}
+              busy={busy} onPrepare={onPrepare} onResolve={onResolve} />
           )}
+          {(prepare.isError || resolve.isError) && <p role="alert">{t('focus.recovery.error')}</p>}
+
         </div>
       </dialog>
     </section>

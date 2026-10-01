@@ -26,6 +26,14 @@ public static class DependencyInjection
             options.SerializerOptions.Converters.Add(
                 new JsonStringEnumConverter<InterventionStrategy>(allowIntegerValues: false));
             options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<RecoveryInterventionType>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<RecoveryRequirement>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<RecoveryChoice>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter<RecoveryResolution>(allowIntegerValues: false));
+            options.SerializerOptions.Converters.Add(
                 new JsonStringEnumConverter<FocusSessionReflection>(allowIntegerValues: false));
         });
 

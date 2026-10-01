@@ -1,4 +1,4 @@
-﻿using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Common.Security;
 using FocusPocuss.Domain.Entities;
 
@@ -77,9 +77,10 @@ public class StartFocusSessionCommandHandler : IRequestHandler<StartFocusSession
         CancellationToken cancellationToken)
     {
         return _context.FocusSessions
+            .Include(session => session.DistractionEvents)
             .AsNoTracking()
             .SingleOrDefaultAsync(
-                session => session.UserId == userId && session.CompletedAtUtc == null,
+                session => session.UserId == userId && session.CompletedAtUtc == null && session.EndedEarlyAtUtc == null,
                 cancellationToken);
     }
 }

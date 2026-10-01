@@ -84,7 +84,7 @@ export function FocusSessionHistoryList({
               <span className="session-history-status">
                 {t(isCompleted
                   ? 'focus.history.completed'
-                  : 'focus.history.incomplete')}
+                  : session.endedEarlyAtUtc ? 'focus.recovery.ended' : 'focus.history.incomplete')}
               </span>
             </div>
 
@@ -102,6 +102,10 @@ export function FocusSessionHistoryList({
                 </span>
               )}
             </div>
+
+            {!!session.parkedThoughtCount && <Link to={`/focus/${session.id}`}>
+              {t('focus.recovery.savedThoughts', { count: session.parkedThoughtCount })}
+            </Link>}
 
             {reflectionTranslationKey && (
               <p className="session-history-reflection">

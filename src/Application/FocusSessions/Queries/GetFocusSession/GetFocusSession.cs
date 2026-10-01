@@ -1,4 +1,4 @@
-﻿using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Common.Security;
 
 namespace FocusPocuss.Application.FocusSessions.Queries.GetFocusSession;
@@ -22,6 +22,7 @@ public class GetFocusSessionQueryHandler : IRequestHandler<GetFocusSessionQuery,
         CancellationToken cancellationToken)
     {
         var session = await _context.FocusSessions
+            .Include(session => session.DistractionEvents)
             .AsNoTracking()
             .SingleOrDefaultAsync(
                 item => item.Id == request.FocusSessionId && item.UserId == _user.Id,

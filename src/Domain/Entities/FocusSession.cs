@@ -32,6 +32,14 @@ public class FocusSession : BaseAuditableEntity
 
     public string Action { get; private set; } = string.Empty;
 
+    public string? RecoveryAction { get; private set; }
+
+    public string CurrentAction => RecoveryAction ?? Action;
+
+    public int RecoveryRevision { get; private set; }
+
+    public DateTimeOffset? EndedEarlyAtUtc { get; private set; }
+
     public int PlannedDurationMinutes { get; private set; }
 
     public DateTimeOffset StartedAtUtc { get; private set; }
@@ -50,7 +58,30 @@ public class FocusSession : BaseAuditableEntity
 
     public void Complete(DateTimeOffset completedAtUtc)
     {
-        CompletedAtUtc ??= completedAtUtc;
+        if (CompletedAtUtc is not null) return;
+        TouchRecovery();
+        CompletedAtUtc = completedAtUtc.ToUniversalTime();
+    }
+
+    public void TouchRecovery()
+    {
+        if (CompletedAtUtc is not null || EndedEarlyAtUtc is not null)
+            throw new InvalidOperationException("The focus session has ended.");
+        RecoveryRevision++;
+    }
+
+    public void ApplyRecoveryAction(string action)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(action);
+        if (action.Trim().Length > 500) throw new ArgumentOutOfRangeException(nameof(action));
+        TouchRecovery();
+        RecoveryAction = action.Trim();
+    }
+
+    public void EndEarly(DateTimeOffset endedAtUtc)
+    {
+        TouchRecovery();
+        EndedEarlyAtUtc = endedAtUtc.ToUniversalTime();
     }
 
     public void RecordReflection(

@@ -35,6 +35,12 @@ public static class TestApp
 
     public static List<string>? GetRoles() => _roles;
 
+    public static TestRecoveryActionPlanner GetRecoveryActionPlanner()
+    {
+        using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<TestRecoveryActionPlanner>();
+    }
+
     public static TestTaskStartPlanner GetTaskStartPlanner()
     {
         using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
@@ -95,6 +101,7 @@ public static class TestApp
         _userId = null;
         _roles = null;
         GetTaskStartPlanner().Reset();
+        GetRecoveryActionPlanner().Reset();
     }
 
     public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)

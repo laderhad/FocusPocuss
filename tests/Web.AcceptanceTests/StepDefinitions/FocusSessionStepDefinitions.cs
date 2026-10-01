@@ -29,36 +29,76 @@ public sealed class FocusSessionStepDefinitions(
                     }
                     """
             }));
+        var action = FocusSessionPage.ExpectedNextAction;
+        string? savedThought = null;
+        var endedEarly = false;
         var activeTaskId = 1;
         var activePlanId = 501;
         await page.RouteAsync("**/api/focus-sessions/active", route =>
         {
             using var request = System.Text.Json.JsonDocument.Parse(route.Request.PostData!);
+            action = FocusSessionPage.ExpectedNextAction;
+            savedThought = null;
+            endedEarly = false;
             activeTaskId = request.RootElement.GetProperty("taskId").GetInt32();
             activePlanId = request.RootElement.GetProperty("taskStartPlanId").GetInt32();
             return FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId);
         });
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}", route =>
-            FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId));
+            FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId,
+                action: action, thought: savedThought, endedEarly: endedEarly));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/complete", route =>
             FulfillSessionAsync(route, completed: true, taskId: activeTaskId, taskStartPlanId: activePlanId));
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/reflection", route =>
             FulfillSessionAsync(route, completed: true, reflected: true, taskId: activeTaskId, taskStartPlanId: activePlanId));
+        var reason = "UnclearNextAction";
         await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/distractions", route =>
-            route.FulfillAsync(new RouteFulfillOptions
+        {
+            using var request = System.Text.Json.JsonDocument.Parse(route.Request.PostData!);
+            reason = request.RootElement.GetProperty("reason").GetString()!;
+            var type = reason switch
             {
-                Status = 200,
-                ContentType = "application/json",
-                Body = $$"""
+                "TaskTooDifficult" => "ShrinkCurrentAction",
+                "AnotherThought" => "ParkThought",
+                "Tired" => "RecoveryChoice",
+                "PhoneOrSocialMedia" => "EnvironmentalReset",
+                _ => "ClarifyCurrentAction"
+            };
+            var requirement = reason switch
+            {
+                "AnotherThought" => "ThoughtCapture", "Tired" => "UserChoice", _ => "None"
+            };
+            return route.FulfillAsync(new RouteFulfillOptions
+            {
+                Status = 200, ContentType = "application/json",
+                Body = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    id = 901, focusSessionId = FocusSessionPage.SessionId, reason,
+                    strategy = "ClarifyNextAction",
+                    intervention = new
                     {
-                      "id": 901,
-                      "focusSessionId": {{FocusSessionPage.SessionId}},
-                      "reason": "UnclearNextAction",
-                      "occurredAtUtc": "2026-09-25T08:10:00Z",
-                      "strategy": "ClarifyNextAction"
+                        type, version = "distraction-recovery-v1", currentAction = action,
+                        returnAction = reason is "TaskTooDifficult" or "UnclearNextAction"
+                            ? FocusSessionPage.ExpectedRecoveredAction : action,
+                        requirement, choices = reason == "Tired"
+                            ? new[] { "TakeShortReset", "ContinueWithSmallerAction", "EndSession" } : Array.Empty<string>()
                     }
-                    """
-            }));
+                })
+            });
+        });
+        await page.RouteAsync($"**/api/focus-sessions/{FocusSessionPage.SessionId}/distractions/*/resolve", route =>
+        {
+            using var request = System.Text.Json.JsonDocument.Parse(route.Request.PostData!);
+            var resolution = request.RootElement.GetProperty("resolution").GetString();
+            if (resolution == "EndSession") endedEarly = true;
+            if (resolution == "ReturnToFocus")
+            {
+                if (reason == "AnotherThought") savedThought = request.RootElement.GetProperty("thought").GetString();
+                else if (reason is "TaskTooDifficult" or "UnclearNextAction") action = FocusSessionPage.ExpectedRecoveredAction;
+            }
+            return FulfillSessionAsync(route, completed: false, taskId: activeTaskId, taskStartPlanId: activePlanId,
+                action: action, thought: savedThought, endedEarly: endedEarly);
+        });
 
         var loginPage = new LoginPage(page);
         await loginPage.GotoAsync();
@@ -143,12 +183,29 @@ public sealed class FocusSessionStepDefinitions(
     public Task ThenStartingWithAnOpenSessionRequiresExplicitNavigation(string scope)
         => focusSessionPage.AssertExistingSessionRequiresExplicitNavigationAsync(scope);
 
+    [Then("one clarification can be supplied on mobile after reload")]
+    public Task ThenClarificationWorksOnMobile() => focusSessionPage.ClarifyOnMobileAfterReloadAsync();
+
+    [When("the user parks a thought and returns")]
+    public Task WhenTheUserParksAThought() => focusSessionPage.ParkThoughtAsync();
+
+    [Then("the saved thought survives reload without changing the action")]
+    public Task ThenTheThoughtSurvivesReload() => focusSessionPage.AssertParkedThoughtAfterReloadAsync();
+
+    [When("the tired user chooses to end the session")]
+    public Task WhenTheTiredUserEnds() => focusSessionPage.EndEarlyAsync();
+
+    [Then("the session ends without a completion celebration")]
+    public Task ThenTheSessionEndsEarly() => focusSessionPage.AssertEndedEarlyAsync();
+
     private static Task FulfillSessionAsync(
         IRoute route,
         bool completed,
         bool reflected = false,
         int taskId = 1,
-        int taskStartPlanId = 501)
+        int taskStartPlanId = 501,
+        string action = FocusSessionPage.ExpectedNextAction,
+        string? thought = null, bool endedEarly = false)
     {
         var completedAtUtc = completed ? "\"2026-09-25T08:20:00Z\"" : "null";
         var reflection = reflected ? "\"FocusedWell\"" : "null";
@@ -163,7 +220,9 @@ public sealed class FocusSessionStepDefinitions(
                   "id": {{FocusSessionPage.SessionId}},
                   "taskId": {{taskId}},
                   "taskStartPlanId": {{taskStartPlanId}},
-                  "action": "{{FocusSessionPage.ExpectedNextAction}}",
+                  "action": {{System.Text.Json.JsonSerializer.Serialize(action)}},
+                  "endedEarlyAtUtc": {{(endedEarly ? "\"2026-10-01T08:20:00Z\"" : "null")}},
+                  "parkedThoughts": {{System.Text.Json.JsonSerializer.Serialize(thought is null ? Array.Empty<object>() : new object[] { new { id = 901, text = thought, savedAtUtc = "2026-10-01T08:20:00Z" } })}},
                   "plannedDurationMinutes": 10,
                   "startedAtUtc": "2020-01-01T08:00:00Z",
                   "completedAtUtc": {{completedAtUtc}},

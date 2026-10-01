@@ -14,7 +14,7 @@ internal sealed class FocusSessionReflectionSchemaTransformer : IOpenApiSchemaTr
         var schemaType = Nullable.GetUnderlyingType(context.JsonTypeInfo.Type)
             ?? context.JsonTypeInfo.Type;
 
-        if (schemaType == typeof(FocusSessionReflection) && schema.Enum is not null)
+        if ((schemaType == typeof(FocusSessionReflection) || schemaType == typeof(RecoveryChoice)) && schema.Enum is not null)
         {
             for (var index = schema.Enum.Count - 1; index >= 0; index--)
             {

@@ -1,3 +1,4 @@
+using FocusPocuss.Application.Behavior.Interventions;
 using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Tasks.Planning;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +23,10 @@ public class WebApiFactory(string connectionString) : WebApplicationFactory<Prog
                 .AddSingleton<TestTaskStartPlanner>()
                 .AddSingleton<ITaskStartPlanner>(provider =>
                     provider.GetRequiredService<TestTaskStartPlanner>());
+
+            services.RemoveAll<IRecoveryActionPlanner>()
+                .AddSingleton<TestRecoveryActionPlanner>()
+                .AddSingleton<IRecoveryActionPlanner>(provider => provider.GetRequiredService<TestRecoveryActionPlanner>());
 
             services
                 .RemoveAll<IUser>()

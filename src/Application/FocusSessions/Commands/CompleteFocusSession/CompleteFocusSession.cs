@@ -1,4 +1,4 @@
-﻿using FocusPocuss.Application.Common.Interfaces;
+using FocusPocuss.Application.Common.Interfaces;
 using FocusPocuss.Application.Common.Security;
 
 namespace FocusPocuss.Application.FocusSessions.Commands.CompleteFocusSession;
@@ -27,8 +27,9 @@ public class CompleteFocusSessionCommandHandler : IRequestHandler<CompleteFocusS
         CancellationToken cancellationToken)
     {
         var session = await _context.FocusSessions
+            .Include(session => session.DistractionEvents)
             .SingleOrDefaultAsync(
-                item => item.Id == request.FocusSessionId && item.UserId == _user.Id,
+                item => item.Id == request.FocusSessionId && item.UserId == _user.Id && item.EndedEarlyAtUtc == null,
                 cancellationToken);
 
         Guard.Against.NotFound(request.FocusSessionId, session);

@@ -35,11 +35,13 @@ public class GetFocusSessionHistoryQueryHandler
             .Select(session => new FocusSessionHistoryItemDto
             {
                 Id = session.Id,
+                ParkedThoughtCount = session.DistractionEvents.Count(item => item.ParkedThought != null),
                 TaskId = session.TaskItemId,
-                Action = session.Action,
+                Action = session.RecoveryAction ?? session.Action,
                 PlannedDurationMinutes = session.PlannedDurationMinutes,
                 StartedAtUtc = session.StartedAtUtc,
                 CompletedAtUtc = session.CompletedAtUtc,
+                EndedEarlyAtUtc = session.EndedEarlyAtUtc,
                 Reflection = session.Reflection,
                 ReflectedAtUtc = session.ReflectedAtUtc
             })

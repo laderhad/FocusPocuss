@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using FocusPocuss.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,11 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                 Status = StatusCodes.Status401Unauthorized,
                 Title = "Unauthorized",
                 Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2"
+            }),
+            ConflictException or DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "The session changed. Reload before trying again."
             }),
             ForbiddenAccessException => (StatusCodes.Status403Forbidden, new ProblemDetails
             {

@@ -1,4 +1,4 @@
-﻿using FocusPocuss.Domain.Entities;
+using FocusPocuss.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +12,10 @@ public class FocusSessionConfiguration : IEntityTypeConfiguration<FocusSession>
             .HasMaxLength(450)
             .IsRequired();
 
+        builder.Ignore(session => session.CurrentAction);
+        builder.Property(session => session.RecoveryAction).HasMaxLength(500);
+        builder.Property(session => session.RecoveryRevision).IsConcurrencyToken();
+
         builder.Property(session => session.Action)
             .HasMaxLength(500)
             .IsRequired();
@@ -23,7 +27,7 @@ public class FocusSessionConfiguration : IEntityTypeConfiguration<FocusSession>
 
         builder.HasIndex(session => session.UserId)
             .IsUnique()
-            .HasFilter("\"CompletedAtUtc\" IS NULL")
+            .HasFilter("\"CompletedAtUtc\" IS NULL AND \"EndedEarlyAtUtc\" IS NULL")
             .HasDatabaseName("IX_FocusSessions_UserId_Active");
 
         builder.HasOne(session => session.TaskItem)

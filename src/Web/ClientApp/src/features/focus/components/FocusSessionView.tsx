@@ -7,6 +7,7 @@ import { DistractionReporter } from './DistractionReporter';
 import { FocusSessionReflectionPrompt } from './FocusSessionReflectionPrompt';
 import { FocusArtwork } from './FocusArtwork';
 import { CompletionHeading } from './CompletionHeading';
+import { ParkedThoughts } from './ParkedThoughts';
 
 interface FocusSessionViewProps {
   sessionId: number;
@@ -33,11 +34,12 @@ export function FocusSessionView({
   const [isTimerVisible, setIsTimerVisible] = useState(true);
   const [skippedReflectionSessionId, setSkippedReflectionSessionId] =
     useState<number>();
-  const isCompleted = session.completedAtUtc !== undefined;
+  const isCompleted = session.completedAtUtc != null;
+  const isEndedEarly = session.endedEarlyAtUtc != null;
   const remainingSeconds = useRemainingSeconds(
     session.startedAtUtc,
     session.plannedDurationMinutes,
-    !isCompleted,
+    !isCompleted && !isEndedEarly,
   );
 
   if (
@@ -54,12 +56,13 @@ export function FocusSessionView({
     );
   }
 
-  if (isCompleted) {
+  if (isCompleted || isEndedEarly) {
     const taskPath = session.taskId ? `/tasks/${session.taskId}` : '/tasks';
 
     return (
       <section className="focus-session-result" aria-labelledby="focus-completed-title">
-        <CompletionHeading />
+        {isEndedEarly ? <h1 id="focus-completed-title">{t('focus.recovery.ended')}</h1> : <CompletionHeading />}
+        <ParkedThoughts thoughts={session.parkedThoughts} />
         <div className="focus-result-actions">
           <Link to={taskPath} role="button">{t('focus.session.backToTask')}</Link>
           <Link to="/tasks">{t('focus.session.backToTasks')}</Link>
@@ -109,8 +112,10 @@ export function FocusSessionView({
         <button className="focus-complete-button" type="button" disabled={isCompleting} onClick={onComplete}>
           {isCompleting ? t('focus.session.completing') : t('focus.session.complete')}
         </button>
-        <DistractionReporter sessionId={sessionId} />
+        <DistractionReporter sessionId={sessionId} recovery={session.pendingRecovery} />
       </div>
+
+      <ParkedThoughts thoughts={session.parkedThoughts} />
 
       {completionFailed && (
         <p className="focus-session-error" role="alert">

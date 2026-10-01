@@ -42,5 +42,20 @@ Scenario: Recovery follows the server-selected strategy
     When the user starts the focus session
     And the user reports tiredness and the server selects clarification
     Then the selected recovery guidance is shown
-    When the user returns to focus
-    Then the recovery guidance is dismissed and the focus session remains active
+
+Scenario: A parked thought survives reload
+    Given an authenticated user has a task start recommendation
+    When the user starts the focus session
+    And the user parks a thought and returns
+    Then the saved thought survives reload without changing the action
+
+Scenario: A tired user can end without claiming completion
+    Given an authenticated user has a task start recommendation
+    When the user starts the focus session
+    And the tired user chooses to end the session
+    Then the session ends without a completion celebration
+
+Scenario: Pending clarification survives reload on mobile
+    Given an authenticated user has a task start recommendation
+    When the user starts the focus session
+    Then one clarification can be supplied on mobile after reload

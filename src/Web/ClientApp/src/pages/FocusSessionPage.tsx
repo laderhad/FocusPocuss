@@ -38,8 +38,8 @@ export function FocusSessionPage() {
   }
 
   return (
-    <div className={sessionQuery.data.completedAtUtc !== undefined ? 'focus-completed-shell' : undefined}>
-      {sessionQuery.data.completedAtUtc !== undefined && <NavMenu />}
+    <div className={(sessionQuery.data.completedAtUtc != null || sessionQuery.data.endedEarlyAtUtc != null) ? 'focus-completed-shell' : undefined}>
+      {(sessionQuery.data.completedAtUtc != null || sessionQuery.data.endedEarlyAtUtc != null) && <NavMenu />}
       <div className="focus-session-page">
         <FocusSessionView
           sessionId={parsedSessionId}

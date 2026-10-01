@@ -15,6 +15,7 @@ public static class DependencyInjection
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         builder.Services.AddSingleton<DistractionInterventionSelector>();
+        builder.Services.AddScoped<RecoveryActionPreparation>();
 
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

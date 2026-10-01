@@ -6,6 +6,8 @@ public sealed class FocusSessionHistoryItemDto
 {
     public int Id { get; init; }
 
+    public int ParkedThoughtCount { get; init; }
+
     public int TaskId { get; init; }
 
     public required string Action { get; init; }
@@ -15,6 +17,8 @@ public sealed class FocusSessionHistoryItemDto
     public DateTimeOffset StartedAtUtc { get; init; }
 
     public DateTimeOffset? CompletedAtUtc { get; init; }
+
+    public DateTimeOffset? EndedEarlyAtUtc { get; init; }
 
     public FocusSessionReflection? Reflection { get; init; }
 

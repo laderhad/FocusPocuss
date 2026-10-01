@@ -1,4 +1,6 @@
 import {
+  PrepareRecoveryRequest,
+  ResolveRecoveryRequest,
   DistractionReason,
   FocusSessionReflection,
   FocusSessionsClient,
@@ -57,10 +59,11 @@ export function recordFocusSessionReflection(
 export function reportDistraction(
   sessionId: number,
   reason: DistractionReason,
+  language: string,
 ): Promise<DistractionReportDto> {
   return focusSessionsClient.reportDistraction(
     sessionId,
-    new ReportDistractionRequest({ reason }),
+    new ReportDistractionRequest({ reason, language }),
   );
 }
 
@@ -70,3 +73,16 @@ export type {
   FocusSessionDto,
   FocusSessionHistoryItemDto,
 };
+
+export function prepareRecovery(sessionId: number, distractionId: number, input: PrepareRecoveryRequest) {
+  return focusSessionsClient.prepareRecovery(sessionId, distractionId, input);
+}
+
+export function resolveRecovery(sessionId: number, distractionId: number, input: ResolveRecoveryRequest) {
+  return focusSessionsClient.resolveRecovery(sessionId, distractionId, input);
+}
+
+export {
+  RecoveryChoice, RecoveryInterventionType, RecoveryRequirement, RecoveryResolution,
+  PrepareRecoveryRequest, ResolveRecoveryRequest,
+} from '../../../web-api-client';

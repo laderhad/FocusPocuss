@@ -14,7 +14,6 @@ public class CreateTaskStartPlanCommandHandler : IRequestHandler<CreateTaskStart
     private const int MaximumNextActionLength = 500;
     private const int MaximumModelLength = 100;
     private const int MaximumPromptVersionLength = 50;
-    private const int MaximumSuggestedDurationMinutes = 60;
 
     private readonly IApplicationDbContext _context;
     private readonly ITaskStartPlanner _planner;
@@ -94,7 +93,8 @@ public class CreateTaskStartPlanCommandHandler : IRequestHandler<CreateTaskStart
             throw new InvalidOperationException("Task start planner returned an invalid next action.");
         }
 
-        if (result.SuggestedDurationMinutes is < 1 or > MaximumSuggestedDurationMinutes)
+        if (result.SuggestedDurationMinutes is < TaskStartPlanLimits.MinimumSuggestedDurationMinutes
+            or > TaskStartPlanLimits.MaximumSuggestedDurationMinutes)
         {
             throw new InvalidOperationException("Task start planner returned an invalid suggested duration.");
         }
